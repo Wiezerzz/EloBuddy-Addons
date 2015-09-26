@@ -45,11 +45,11 @@ namespace wzAmumu
             //FIX THIS SHIT OMFG.
             if (SmiteNames.Contains(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Summoner1).Name))
             {
-                Smite = new Spell.Targeted(SpellSlot.Summoner1, 570);
+                Smite = new Spell.Targeted(SpellSlot.Summoner1, 500);
             }
             if (SmiteNames.Contains(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Summoner2).Name))
             {
-                Smite = new Spell.Targeted(SpellSlot.Summoner2, 570);
+                Smite = new Spell.Targeted(SpellSlot.Summoner2, 500);
             }
             #endregion
 
