@@ -196,7 +196,7 @@ namespace wzAmumu
 
             if (comboMenu["combousee"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.E].IsReady())
             {
-                AIHeroClient target = TargetSelector.GetTarget(spells[SpellSlot.E].Range, DamageType.Magical);
+                AIHeroClient target = EntityManager.Heroes.Enemies.First(enemy => enemy.IsValid && !enemy.IsDead && enemy.Distance(Player.Instance) <= spells[SpellSlot.E].Range);
 
                 if (target != null)
                     spells[SpellSlot.E].Cast();
