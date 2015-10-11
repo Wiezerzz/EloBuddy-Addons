@@ -26,6 +26,14 @@ namespace wzAmumu
             {SpellSlot.R, new Spell.Active(SpellSlot.R, 550)}
         };
 
+        private static readonly List<KeyValuePair<string, SpellSlot>> drawSpellsList = new List<KeyValuePair<string, SpellSlot>>
+        {
+            new KeyValuePair<string, SpellSlot>("q", SpellSlot.Q),
+            new KeyValuePair<string, SpellSlot>("w", SpellSlot.W),
+            new KeyValuePair<string, SpellSlot>("e", SpellSlot.E),
+            new KeyValuePair<string, SpellSlot>("r", SpellSlot.R)
+        };
+
         private static readonly string[] SmiteNames = { "s5_summonersmiteplayerganker", "itemsmiteaoe", "s5_summonersmitequick", "s5_summonersmiteduel", "summonersmite" };
         private static Spell.Targeted Smite;
 
@@ -151,14 +159,6 @@ namespace wzAmumu
 
         private static void Drawing_OnDraw(EventArgs args)
         {
-            List<KeyValuePair<string, SpellSlot>> drawSpellsList = new List<KeyValuePair<string, SpellSlot>>
-            {
-                new KeyValuePair<string, SpellSlot>("q", SpellSlot.Q),
-                new KeyValuePair<string, SpellSlot>("w", SpellSlot.W),
-                new KeyValuePair<string, SpellSlot>("e", SpellSlot.E),
-                new KeyValuePair<string, SpellSlot>("r", SpellSlot.R)
-            };
-
             //Resharper can make this look even harder than it already is with Linq but I'm just gonna let it be this way.
             foreach (KeyValuePair<string, SpellSlot> pair in drawSpellsList)
             {
@@ -187,7 +187,6 @@ namespace wzAmumu
                             1 && CastSmite(predictionResult.CollisionObjects.FirstOrDefault()))
                         {
                             spells[SpellSlot.Q].Cast(target);
-                            Console.WriteLine(predictionResult.HitChance);
                         }
                     }
                 }
@@ -229,7 +228,7 @@ namespace wzAmumu
         {
             if (farmMenu["laneclearuseq"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.Q].IsReady())
             {
-                Obj_AI_Base minion = EntityManager.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.ServerPosition.To2D(), spells[SpellSlot.Q].Range, false).OrderByDescending(x => x.MaxHealth).FirstOrDefault();
+                Obj_AI_Base minion = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.ServerPosition, spells[SpellSlot.Q].Range, false).OrderByDescending(x => x.MaxHealth).FirstOrDefault();
 
                 if (minion != null && !Player.Instance.IsInAutoAttackRange(minion))
                     spells[SpellSlot.Q].Cast(minion);
@@ -239,7 +238,7 @@ namespace wzAmumu
 
             if (farmMenu["laneclearusee"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.E].IsReady())
             {
-                int count = EntityManager.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.ServerPosition.To2D(), spells[SpellSlot.E].Range, false).Count;
+                int count = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.ServerPosition, spells[SpellSlot.E].Range, false).Count;
 
                 if (count >= 3)
                     spells[SpellSlot.E].Cast();
@@ -250,7 +249,7 @@ namespace wzAmumu
         {
             if (farmMenu["jungleclearuseq"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.Q].IsReady())
             {
-                Obj_AI_Base jungleMob = EntityManager.GetJungleMonsters(Player.Instance.ServerPosition.To2D(), spells[SpellSlot.Q].Range, false).OrderByDescending(x => x.MaxHealth).FirstOrDefault();
+                Obj_AI_Base jungleMob = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, spells[SpellSlot.Q].Range, false).OrderByDescending(x => x.MaxHealth).FirstOrDefault();
 
 
                 if (jungleMob != null && !Player.Instance.IsInAutoAttackRange(jungleMob))
@@ -261,7 +260,7 @@ namespace wzAmumu
 
             if (farmMenu["jungleclearusee"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.E].IsReady())
             {
-                int count = EntityManager.GetJungleMonsters(Player.Instance.ServerPosition.To2D(), spells[SpellSlot.E].Range, false).Count;
+                int count = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, spells[SpellSlot.E].Range, false).Count;
 
                 if (count >= 1)
                     spells[SpellSlot.E].Cast();
@@ -270,9 +269,12 @@ namespace wzAmumu
 
         private static void AutoR()
         {
-            if (comboMenu["combouser"].Cast<CheckBox>().CurrentValue && Player.Instance.CountEnemiesInRange(spells[SpellSlot.R].Range) >= comboMenu["comboautor"].Cast<Slider>().CurrentValue)
+            if (comboMenu["combouser"].Cast<CheckBox>().CurrentValue)
             {
-                spells[SpellSlot.R].Cast();
+                int cnt = EntityManager.Heroes.Enemies.Count(enemy => enemy.IsValid && !enemy.IsDead && enemy.Distance(Player.Instance) <= spells[SpellSlot.R].Range);
+
+                if (cnt >= comboMenu["comboautor"].Cast<Slider>().CurrentValue)
+                    spells[SpellSlot.R].Cast();
             }
         }
 
@@ -280,8 +282,8 @@ namespace wzAmumu
         {
             if (autowMenu["autousew"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.W].IsReady() && Player.Instance.ManaPercent >= autowMenu["autowmana"].Cast<Slider>().CurrentValue)
             {
-                int minions = EntityManager.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.ServerPosition.To2D(), spells[SpellSlot.W].Range).Count;
-                int jungleMobs = EntityManager.GetJungleMonsters(Player.Instance.ServerPosition.To2D(), spells[SpellSlot.W].Range).Count;
+                int minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.ServerPosition, spells[SpellSlot.W].Range).Count;
+                int jungleMobs = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, spells[SpellSlot.W].Range).Count;
 
                 if (combomode)
                 {
