@@ -238,7 +238,7 @@ namespace wzAmumu
 
             if (farmMenu["laneclearusee"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.E].IsReady())
             {
-                int count = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.ServerPosition, spells[SpellSlot.E].Range, false).Count;
+                int count = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.ServerPosition, spells[SpellSlot.E].Range, false).Count();
 
                 if (count >= 3)
                     spells[SpellSlot.E].Cast();
@@ -260,7 +260,7 @@ namespace wzAmumu
 
             if (farmMenu["jungleclearusee"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.E].IsReady())
             {
-                int count = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, spells[SpellSlot.E].Range, false).Count;
+                int count = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, spells[SpellSlot.E].Range, false).Count();
 
                 if (count >= 1)
                     spells[SpellSlot.E].Cast();
@@ -282,8 +282,8 @@ namespace wzAmumu
         {
             if (autowMenu["autousew"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.W].IsReady() && Player.Instance.ManaPercent >= autowMenu["autowmana"].Cast<Slider>().CurrentValue)
             {
-                int minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.ServerPosition, spells[SpellSlot.W].Range).Count;
-                int jungleMobs = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, spells[SpellSlot.W].Range).Count;
+                int minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.ServerPosition, spells[SpellSlot.W].Range).Count();
+                int jungleMobs = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, spells[SpellSlot.W].Range).Count();
 
                 if (combomode)
                 {
