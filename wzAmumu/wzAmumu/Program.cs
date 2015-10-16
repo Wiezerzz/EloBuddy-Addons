@@ -145,7 +145,7 @@ namespace wzAmumu
                     break;
                 default:
                     //Turn off W when recalling.
-                    if (Player.Instance.IsRecalling && spells[SpellSlot.W].Handle.ToggleState == 2)
+                    if (Player.Instance.IsRecalling() && spells[SpellSlot.W].Handle.ToggleState == 2)
                         spells[SpellSlot.W].Cast();
                     break;
             }

@@ -1,0 +1,11 @@
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzAmumu\wzAmumu\bin\Debug\wzAmumu.exe.config
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzAmumu\wzAmumu\bin\Debug\wzAmumu.exe
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzAmumu\wzAmumu\bin\Debug\wzAmumu.pdb
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzAmumu\wzAmumu\bin\Debug\EloBuddy.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzAmumu\wzAmumu\bin\Debug\EloBuddy.SDK.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzAmumu\wzAmumu\bin\Debug\SharpDX.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzAmumu\wzAmumu\bin\Debug\SharpDX.Direct3D9.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzAmumu\wzAmumu\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzAmumu\wzAmumu\obj\Debug\wzAmumu.csprojResolveAssemblyReference.cache
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzAmumu\wzAmumu\obj\Debug\wzAmumu.exe
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzAmumu\wzAmumu\obj\Debug\wzAmumu.pdb
