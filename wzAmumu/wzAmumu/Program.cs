@@ -196,9 +196,9 @@ namespace wzAmumu
 
             if (comboMenu["combousee"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.E].IsReady())
             {
-                AIHeroClient target = EntityManager.Heroes.Enemies.First(enemy => enemy.IsValid && !enemy.IsDead && enemy.Distance(Player.Instance) <= spells[SpellSlot.E].Range);
+                int count = EntityManager.Heroes.Enemies.Count(enemy => enemy.IsValid && !enemy.IsDead && enemy.Distance(Player.Instance) <= spells[SpellSlot.E].Range);
 
-                if (target != null)
+                if (count >= 1)
                     spells[SpellSlot.E].Cast();
             }
         }
@@ -228,7 +228,7 @@ namespace wzAmumu
         {
             if (farmMenu["laneclearuseq"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.Q].IsReady())
             {
-                Obj_AI_Base minion = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.ServerPosition, spells[SpellSlot.Q].Range, false).OrderByDescending(x => x.MaxHealth).FirstOrDefault();
+                Obj_AI_Base minion = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.ServerPosition, spells[SpellSlot.Q].Range).OrderByDescending(x => x.MaxHealth).FirstOrDefault();
 
                 if (minion != null && !Player.Instance.IsInAutoAttackRange(minion))
                     spells[SpellSlot.Q].Cast(minion);
@@ -249,8 +249,7 @@ namespace wzAmumu
         {
             if (farmMenu["jungleclearuseq"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.Q].IsReady())
             {
-                Obj_AI_Base jungleMob = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, spells[SpellSlot.Q].Range, false).OrderByDescending(x => x.MaxHealth).FirstOrDefault();
-
+                Obj_AI_Base jungleMob = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, spells[SpellSlot.Q].Range).OrderByDescending(x => x.MaxHealth).FirstOrDefault();
 
                 if (jungleMob != null && !Player.Instance.IsInAutoAttackRange(jungleMob))
                     spells[SpellSlot.Q].Cast(jungleMob);
@@ -280,8 +279,16 @@ namespace wzAmumu
 
         private static void HandleW(bool combomode = false)
         {
-            if (autowMenu["autousew"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.W].IsReady() && Player.Instance.ManaPercent >= autowMenu["autowmana"].Cast<Slider>().CurrentValue)
+            if (autowMenu["autousew"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.W].IsReady())
             {
+                if (Player.Instance.ManaPercent < autowMenu["autowmana"].Cast<Slider>().CurrentValue)
+                {
+                    if (spells[SpellSlot.W].Handle.ToggleState == 2)
+                        spells[SpellSlot.W].Cast();
+
+                    return;
+                }
+
                 int minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.ServerPosition, spells[SpellSlot.W].Range).Count();
                 int jungleMobs = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, spells[SpellSlot.W].Range).Count();
 
