@@ -196,9 +196,9 @@ namespace wzAmumu
 
             if (comboMenu["combousee"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.E].IsReady())
             {
-                int count = EntityManager.Heroes.Enemies.Count(enemy => enemy.IsValid && !enemy.IsDead && enemy.Distance(Player.Instance) <= spells[SpellSlot.E].Range);
+                AIHeroClient target = TargetSelector.GetTarget(spells[SpellSlot.E].Range, DamageType.Magical);
 
-                if (count >= 1)
+                if (target != null)
                     spells[SpellSlot.E].Cast();
             }
         }
@@ -259,9 +259,9 @@ namespace wzAmumu
 
             if (farmMenu["jungleclearusee"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.E].IsReady())
             {
-                int count = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, spells[SpellSlot.E].Range, false).Count();
+                Obj_AI_Base jungleMob = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, spells[SpellSlot.E].Range, false).FirstOrDefault();
 
-                if (count >= 1)
+                if (jungleMob != null)
                     spells[SpellSlot.E].Cast();
             }
         }

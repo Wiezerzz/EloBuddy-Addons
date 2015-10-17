@@ -1,0 +1,13 @@
+C:\Users\Wiezerzz\Desktop\BaseUltPlus\BaseUltPlus\bin\Debug\BaseUltPlus.exe.config
+C:\Users\Wiezerzz\Desktop\BaseUltPlus\BaseUltPlus\bin\Debug\BaseUltPlus.exe
+C:\Users\Wiezerzz\Desktop\BaseUltPlus\BaseUltPlus\bin\Debug\BaseUltPlus.pdb
+C:\Users\Wiezerzz\Desktop\BaseUltPlus\BaseUltPlus\bin\Debug\EloBuddy.dll
+C:\Users\Wiezerzz\Desktop\BaseUltPlus\BaseUltPlus\bin\Debug\EloBuddy.SDK.dll
+C:\Users\Wiezerzz\Desktop\BaseUltPlus\BaseUltPlus\bin\Debug\SharpDX.Direct3D9.dll
+C:\Users\Wiezerzz\Desktop\BaseUltPlus\BaseUltPlus\bin\Debug\SharpDX.dll
+C:\Users\Wiezerzz\Desktop\BaseUltPlus\BaseUltPlus\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Wiezerzz\Desktop\BaseUltPlus\BaseUltPlus\obj\Debug\BaseUltPlus.csprojResolveAssemblyReference.cache
+C:\Users\Wiezerzz\Desktop\BaseUltPlus\BaseUltPlus\obj\Debug\BaseUltPlus.Resources.resources
+C:\Users\Wiezerzz\Desktop\BaseUltPlus\BaseUltPlus\obj\Debug\BaseUltPlus.csproj.GenerateResource.Cache
+C:\Users\Wiezerzz\Desktop\BaseUltPlus\BaseUltPlus\obj\Debug\BaseUltPlus.exe
+C:\Users\Wiezerzz\Desktop\BaseUltPlus\BaseUltPlus\obj\Debug\BaseUltPlus.pdb
