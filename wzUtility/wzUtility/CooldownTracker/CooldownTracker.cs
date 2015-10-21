@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Drawing;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
+using EloBuddy.SDK.Rendering;
 using SharpDX;
 using Color = System.Drawing.Color;
 
@@ -11,42 +13,85 @@ namespace wzUtility.CooldownTracker
     class Tracker
     {
 
-        private static Menu menu, spellTrackerMenu;
-        private static SpellSlot[] summonerSpellSlots = { SpellSlot.Summoner1, SpellSlot.Summoner2 };
-        private static SpellSlot[] spellSlots = { SpellSlot.Q, SpellSlot.W, SpellSlot.E, SpellSlot.R };
+        private static Menu menu, cooldownTrackerMenu;
+        private static readonly SpellSlot[] summonerSpellSlots = { SpellSlot.Summoner1, SpellSlot.Summoner2 };
+        private static readonly SpellSlot[] spellSlots = { SpellSlot.Q, SpellSlot.W, SpellSlot.E, SpellSlot.R };
+        private static Text Text { get; set; }
 
         public Tracker(Menu mainMenu)
         {
             menu = mainMenu;
 
-            spellTrackerMenu = menu.AddSubMenu("Cooldown Tracker", "cooldowntracker");
-            spellTrackerMenu.AddGroupLabel("Cooldown Tracker");
+            cooldownTrackerMenu = menu.AddSubMenu("Cooldown Tracker", "cooldowntrackermenu");
+            cooldownTrackerMenu.AddGroupLabel("Cooldown Tracker");
 
-            spellTrackerMenu.Add("trackallies", new CheckBox("Track Allies"));
-            spellTrackerMenu.Add("trackenemies", new CheckBox("Track Enemies"));
+            cooldownTrackerMenu.Add("trackallies", new CheckBox("Track Allies"));
+            cooldownTrackerMenu.Add("trackenemies", new CheckBox("Track Enemies"));
 
-            AIHeroClient.OnProcessSpellCast += AIHeroClient_OnProcessSpellCast;
-            Drawing.OnEndScene += Drawing_OnDraw;
-        }
-
-        void AIHeroClient_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
-        {
-            AIHeroClient hero = sender as AIHeroClient;
-            if (hero != null)
+            Text = new Text("", new Font(FontFamily.GenericSansSerif, 8, FontStyle.Bold))
             {
+                Color = Color.AntiqueWhite,
+                
+                TextAlign = Text.Align.Center,
+                TextOrientation = Text.Orientation.Center
+            };
 
-            }
+            Drawing.OnEndScene += Drawing_OnDraw;
+            AppDomain.CurrentDomain.DomainUnload += OnDomainUnload;
+            AppDomain.CurrentDomain.ProcessExit += OnDomainUnload;
         }
 
-        private void Drawing_OnDraw(EventArgs args)
+        private static void Drawing_OnDraw(EventArgs args)
         {
             foreach (AIHeroClient hero in EntityManager.Heroes.AllHeroes)
             {
-                if (!hero.IsHPBarRendered || hero.IsMe)
+                if (!hero.IsHPBarRendered || !hero.HPBarPosition.IsOnScreen() || hero.IsMe || (hero.IsAlly && !cooldownTrackerMenu["trackallies"].Cast<CheckBox>().CurrentValue) || (hero.IsEnemy && !cooldownTrackerMenu["trackenemies"].Cast<CheckBox>().CurrentValue))
                     continue;
                 
-                Vector2 startVector2 = new Vector2(hero.HPBarPosition.X - 12, hero.HPBarPosition.Y + (hero.IsAlly ? 13 : 13.2f));
-                
+                Vector2 startVector2 = new Vector2(hero.HPBarPosition.X - 12, hero.HPBarPosition.Y + (hero.IsAlly ? 13 : 14f));
+
+                #region SummmonersBar Block
+                DrawingHelper.DrawFilledRectangle(startVector2.X - 14, startVector2.Y, 14, 29, Color.FromArgb(115, 113, 115)); // light gray box
+                DrawingHelper.DrawRectangle(startVector2.X - 13, startVector2.Y + 1, 13, 13, Color.Black); // 1st outer box
+                DrawingHelper.DrawRectangle(startVector2.X - 13, startVector2.Y + 15, 13, 13, Color.Black); // 2nd outer box
+                #endregion
+
+                foreach (SpellSlot slot in summonerSpellSlots)
+                {
+                    SpellDataInst spell = hero.Spellbook.GetSpell(slot);
+                    float time = spell.CooldownExpires - Game.Time;
+                    float totalCooldown = spell.Cooldown;
+
+                    float percent = (time > 0 && Math.Abs(totalCooldown) > float.Epsilon) ? 1f - (time / totalCooldown) : 1f;
+
+                    if (slot == SpellSlot.Summoner1)
+                    {
+                        DrawingHelper.DrawFilledRectangle(startVector2.X - 12, startVector2.Y + 2, 11, 11, GetSummonerColor(spell.Name));
+                        if (percent < 1f)
+                        {
+                            Drawing.DrawLine(startVector2.X - 12, startVector2.Y + 2, startVector2.X - 1, startVector2.Y + 13, 1f, Color.Black);
+                            Drawing.DrawLine(startVector2.X - 1, startVector2.Y + 1, startVector2.X - 13, startVector2.Y + 13, 1f, Color.Black);
+
+                            Text.TextValue = Math.Floor(time).ToString();
+                            Text.Position = new Vector2(startVector2.X - 40, startVector2.Y - 2);
+                            Text.Draw();
+                        }
+                    }
+                    else
+                    {
+                        DrawingHelper.DrawFilledRectangle(startVector2.X - 12, startVector2.Y + 16, 11, 11, GetSummonerColor(spell.Name));
+                        if (percent < 1f)
+                        {
+                            Drawing.DrawLine(startVector2.X - 12, startVector2.Y + 16, startVector2.X - 1, startVector2.Y + 27, 1f, Color.Black);
+                            Drawing.DrawLine(startVector2.X - 1, startVector2.Y + 15, startVector2.X - 13, startVector2.Y + 27, 1f, Color.Black);
+                            
+                            Text.TextValue = Math.Floor(time).ToString();
+                            Text.Position = new Vector2(startVector2.X - 40, startVector2.Y + 15);
+                            Text.Draw();
+                        }
+                    }
+                }
+
                 #region SpellBar Block
                 Drawing.DrawLine(startVector2.X, startVector2.Y + 18, startVector2.X, startVector2.Y + 29, 1, Color.FromArgb(115, 113, 115)); //left light gray outer line
                 Drawing.DrawLine(startVector2.X, startVector2.Y + 28, startVector2.X + 130, startVector2.Y + 28, 1, Color.FromArgb(115, 113, 115)); //bottom light gray outer line
@@ -62,10 +107,10 @@ namespace wzUtility.CooldownTracker
 
                 Drawing.DrawLine(startVector2.X + 2, startVector2.Y + 17, startVector2.X + 2, startVector2.Y + 18, 1, Color.FromArgb(115, 113, 115)); //Pixel fix light
                 Drawing.DrawLine(startVector2.X + 2, startVector2.Y + 18, startVector2.X + 2, startVector2.Y + 19, 1, Color.FromArgb(49, 48, 49)); //Pixel fix dark
+
+                DrawingHelper.DrawRectangle(startVector2.X + 2, startVector2.Y + 19, 106, 8, Color.Black); //SpellBar container
                 #endregion
                 
-                DrawingHelper.DrawRectangle(startVector2.X + 2, startVector2.Y + 19, 106, 8, Color.Black); //SpellBar container
-
                 foreach (SpellSlot slot in spellSlots)
                 {
                     SpellDataInst spell = hero.Spellbook.GetSpell(slot);
@@ -100,10 +145,11 @@ namespace wzUtility.CooldownTracker
                             DrawingHelper.DrawFilledRectangle(startVector2.X + Xoffset, startVector2.Y + 20, length, 6, Color.Green);
                         else
                         {
-                            DrawingHelper.DrawFilledRectangle(startVector2.X + Xoffset, startVector2.Y + 20, length, 6, Color.DimGray);
+                            DrawingHelper.DrawFilledRectangle(startVector2.X + Xoffset, startVector2.Y + 20, length, 6, Color.DarkGray);
                             DrawingHelper.DrawFilledRectangle(startVector2.X + Xoffset, startVector2.Y + 20, length * percent, 6, Color.Orange);
-                            Drawing.DrawText(startVector2.X + Xoffset + 9, startVector2.Y + 30, Color.Black, Math.Round(time).ToString());
-                            Drawing.DrawText(startVector2.X + Xoffset + 8, startVector2.Y + 29, Color.White, Math.Round(time).ToString());
+                            Text.TextValue = Math.Floor(time).ToString();
+                            Text.Position = new Vector2(startVector2.X + Xoffset + 13 - (Text.TextValue.Length * 3), startVector2.Y + 29);
+                            Text.Draw();
                         }
 
                     }
@@ -117,6 +163,71 @@ namespace wzUtility.CooldownTracker
                 Drawing.DrawLine(startVector2.X + 54, startVector2.Y + 20, startVector2.X + 54, startVector2.Y + 26, 1, Color.Black); //Second Line
                 Drawing.DrawLine(startVector2.X + 80, startVector2.Y + 20, startVector2.X + 80, startVector2.Y + 26, 1, Color.Black); // Third Line
             }
+        }
+
+        private static Color GetSummonerColor(string name)
+        {
+            Color color;
+
+            switch (name.ToLower())
+            {
+                case "summonerbarrier":
+                    color = Color.SandyBrown;
+                    break;
+                case "summonersnowball":
+                    color = Color.White;
+                    break;
+                case "summonerodingarrison":
+                    color = Color.Green;
+                    break;
+                case "summonerclairvoyance":
+                    color = Color.Blue;
+                    break;
+                case "summonerboost": //cleanse
+                    color = Color.LightBlue;
+                    break;
+                case "summonermana":
+                    color = Color.DarkBlue;
+                    break;
+                case "summonerteleport":
+                    color = Color.Purple;
+                    break;
+                case "summonerheal":
+                    color = Color.GreenYellow;
+                    break;
+                case "summonerexhaust":
+                    color = Color.DarkGoldenrod;
+                    break;
+                case "summonerdot":
+                    color = Color.Red;
+                    break;
+                case "summonerhaste":
+                    color = Color.SkyBlue;
+                    break;
+                case "summonerflash":
+                    color = Color.Yellow;
+                    break;
+                case "summonersmite":
+                case "s5_summonersmiteduel":
+                case "s5_summonersmiteplayerganker":
+                case "s5_summonersmitequick":
+                case "itemsmiteaoe":
+                    color = Color.Orange;
+                    break;
+                default:
+                    color = Color.White;
+                    break;
+            }
+
+            return color;
+        }
+
+        private static void OnDomainUnload(object sender, EventArgs e)
+        {
+            if (Text == null) return;
+
+            Text.Dispose();
+            Text = null;
         }
     }
 }

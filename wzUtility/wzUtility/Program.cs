@@ -10,8 +10,10 @@ namespace wzUtility
     {
         private static Menu menu;
         private static CooldownTracker.Tracker cooldownTracker;
+        private static TowerRange.TowerRange towerRange;
+        private static WardTracker.Tracker wardTracker;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Loading.OnLoadingComplete += Loading_OnLoadingComplete;
         }
@@ -25,10 +27,17 @@ namespace wzUtility
 
             menu.AddLabel("To enable/disable a plugin you have to reload the addon. (default reload button is F5)");
             menu.Add("loadcooldowntracker", new CheckBox("Load Cooldown Tracker plugin"));
+            menu.Add("loadtowerrangeindicator", new CheckBox("Load Tower Range Indicator plugin"));
+            menu.Add("loadwardtracker", new CheckBox("Load Ward Tracker plugin"));
 
             if (menu["loadcooldowntracker"].Cast<CheckBox>().CurrentValue)
                 cooldownTracker = new CooldownTracker.Tracker(menu);
 
+            if(menu["loadtowerrangeindicator"].Cast<CheckBox>().CurrentValue)
+                towerRange = new TowerRange.TowerRange(menu);
+
+            if (menu["loadwardtracker"].Cast<CheckBox>().CurrentValue)
+                wardTracker = new WardTracker.Tracker(menu);
         }
     }
 }
