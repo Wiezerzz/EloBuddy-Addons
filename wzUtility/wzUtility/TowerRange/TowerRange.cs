@@ -27,10 +27,14 @@ namespace wzUtility.TowerRange
             towerRangeMenu.AddSeparator(0);
             towerRangeMenu.Add("rangetodraw", new Slider("Distance from tower to start drawing", 600, 300, 1000));
 
-            foreach (var obj in EntityManager.Turrets.AllTurrets.Where(x => x.TotalAttackDamage < 800).Where(obj => !turrets.ContainsKey(obj.NetworkId)))
+
+            Core.DelayAction(() =>
             {
-                turrets.Add(obj.NetworkId, obj);
-            }
+                foreach (Obj_AI_Turret obj in EntityManager.Turrets.AllTurrets.Where(x => x.TotalAttackDamage < 800).Where(obj => !turrets.ContainsKey(obj.NetworkId)))
+                {
+                    turrets.Add(obj.NetworkId, obj);
+                }
+            }, 100);
 
             Drawing.OnDraw += Drawing_OnDraw;
         }
@@ -54,11 +58,11 @@ namespace wzUtility.TowerRange
                 {
                     continue;
                 }
-                
+
                 float distToTurret = Player.Instance.ServerPosition.Distance(turret.Position);
                 if (distToTurret < turretRange + drawRange)
                 {
-                    if (distToTurret < turretRange + 12 && turret.IsEnemy)
+                    if (distToTurret < turretRange && turret.IsEnemy)
                     {
                         Circle.Draw(new ColorBGRA(255, 0, 0, 255), turretRange, 5, turret.Position);
                         continue;

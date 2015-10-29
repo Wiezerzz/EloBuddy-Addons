@@ -45,10 +45,12 @@ namespace wzUtility.CooldownTracker
         {
             foreach (AIHeroClient hero in EntityManager.Heroes.AllHeroes)
             {
-                if (!hero.IsHPBarRendered || !hero.HPBarPosition.IsOnScreen() || hero.IsMe || (hero.IsAlly && !cooldownTrackerMenu["trackallies"].Cast<CheckBox>().CurrentValue) || (hero.IsEnemy && !cooldownTrackerMenu["trackenemies"].Cast<CheckBox>().CurrentValue))
+                if (!hero.IsHPBarRendered || !hero.HPBarPosition.IsOnScreen() || hero.IsDead || hero.IsMe || (hero.IsAlly && !cooldownTrackerMenu["trackallies"].Cast<CheckBox>().CurrentValue) || (hero.IsEnemy && !cooldownTrackerMenu["trackenemies"].Cast<CheckBox>().CurrentValue))
                     continue;
-                
-                Vector2 startVector2 = new Vector2(hero.HPBarPosition.X - 12, hero.HPBarPosition.Y + (hero.IsAlly ? 13 : 14f));
+
+                hero.HPBarYOffset = 0.4f;
+
+                Vector2 startVector2 = new Vector2(hero.HPBarPosition.X - 12, hero.HPBarPosition.Y + (hero.IsAlly ? 13 : 16f));
 
                 #region SummmonersBar Block
                 DrawingHelper.DrawFilledRectangle(startVector2.X - 14, startVector2.Y, 14, 29, Color.FromArgb(115, 113, 115)); // light gray box
@@ -172,7 +174,7 @@ namespace wzUtility.CooldownTracker
             switch (name.ToLower())
             {
                 case "summonerbarrier":
-                    color = Color.SandyBrown;
+                    color = Color.FromArgb(255, 200, 153, 0);
                     break;
                 case "summonersnowball":
                     color = Color.White;
@@ -196,7 +198,7 @@ namespace wzUtility.CooldownTracker
                     color = Color.GreenYellow;
                     break;
                 case "summonerexhaust":
-                    color = Color.DarkGoldenrod;
+                    color = Color.FromArgb(255, 255, 150, 0);
                     break;
                 case "summonerdot":
                     color = Color.Red;
@@ -212,14 +214,69 @@ namespace wzUtility.CooldownTracker
                 case "s5_summonersmiteplayerganker":
                 case "s5_summonersmitequick":
                 case "itemsmiteaoe":
-                    color = Color.Orange;
+                    color = Color.FromArgb(255, 148, 77, 16);
                     break;
                 default:
-                    color = Color.White;
+                    color = Color.Black;
                     break;
             }
 
             return color;
+        }
+
+        //Not in use atm.
+        private static string GetSummonerSpellName(string name)
+        {
+            string text = "";
+
+            switch (name.ToLower())
+            {
+                case "summonerbarrier":
+                    text = "Barrier";
+                    break;
+                case "summonersnowball":
+                    text = "Snowball";
+                    break;
+                case "summonerodingarrison":
+                    text = "Garrison";
+                    break;
+                case "summonerclairvoyance":
+                    text = "Clairvoyance";
+                    break;
+                case "summonerboost": //cleanse
+                    text = "Cleanse";
+                    break;
+                case "summonermana":
+                    text = "Clarity";
+                    break;
+                case "summonerteleport":
+                    text = "Teleport";
+                    break;
+                case "summonerheal":
+                    text = "Heal";
+                    break;
+                case "summonerexhaust":
+                    text = "Exhausht";
+                    break;
+                case "summonerdot":
+                    text = "Ignite";
+                    break;
+                case "summonerhaste":
+                    text = "Ghost";
+                    break;
+                case "summonerflash":
+                    text = "Flash";
+                    break;
+                case "summonersmite":
+                case "s5_summonersmiteduel":
+                case "s5_summonersmiteplayerganker":
+                case "s5_summonersmitequick":
+                case "itemsmiteaoe":
+                    text = "Smite";
+                    break;
+            }
+
+            return text;
         }
 
         private static void OnDomainUnload(object sender, EventArgs e)

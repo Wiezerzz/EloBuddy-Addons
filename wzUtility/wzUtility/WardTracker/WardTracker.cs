@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Text;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
@@ -87,14 +86,18 @@ namespace wzUtility.WardTracker
                     wards[ward.NetworkId].Position = ward.Position;
                     return;
                 }
-
+				
                 switch (ward.Name)
                 {
                     case "SightWard":
                         wards.Add(ward.NetworkId, new WardObject(ward.Name, false, Game.Time + ward.Mana, ward.Position));
                         break;
                     case "VisionWard":
-                        wards.Add(ward.NetworkId, new WardObject(ward.Name, true, 0, ward.Position));
+                        Console.WriteLine(ward.Name + " | " + ward.BaseSkinName + " | " + ward.Mana + "/" + ward.MaxMana + " | " + ward.IsWard());
+                        wards.Add(ward.NetworkId,
+                            ward.BaseSkinName == "SightWard"
+                                ? new WardObject(ward.Name, false, 0, ward.Position)
+                                : new WardObject(ward.Name, true, 0, ward.Position));
                         break;
                 }
             }
