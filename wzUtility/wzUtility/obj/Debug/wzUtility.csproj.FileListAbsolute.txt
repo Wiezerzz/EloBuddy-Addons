@@ -2,6 +2,10 @@ C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzUtility\wzUtility\bin\Debug
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzUtility\wzUtility\bin\Debug\wzUtility.exe
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzUtility\wzUtility\bin\Debug\wzUtility.pdb
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzUtility\wzUtility\bin\Debug\Newtonsoft.Json.dll
-C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzUtility\wzUtility\obj\Debug\wzUtility.csprojResolveAssemblyReference.cache
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzUtility\wzUtility\obj\Debug\wzUtility.exe
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzUtility\wzUtility\obj\Debug\wzUtility.pdb
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzUtility\wzUtility\bin\Debug\EloBuddy.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzUtility\wzUtility\bin\Debug\EloBuddy.SDK.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzUtility\wzUtility\bin\Debug\SharpDX.Direct3D9.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzUtility\wzUtility\bin\Debug\SharpDX.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzUtility\wzUtility\obj\Debug\wzUtility.csprojResolveAssemblyReference.cache

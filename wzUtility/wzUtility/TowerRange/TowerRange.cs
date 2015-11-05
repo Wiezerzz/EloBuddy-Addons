@@ -34,7 +34,7 @@ namespace wzUtility.TowerRange
                 {
                     turrets.Add(obj.NetworkId, obj);
                 }
-            }, 100);
+            }, 1000);
 
             Drawing.OnDraw += Drawing_OnDraw;
         }

@@ -6,6 +6,7 @@ using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 using EloBuddy.SDK.Rendering;
 using SharpDX;
+
 using Color = System.Drawing.Color;
 
 namespace wzUtility.CooldownTracker
@@ -75,7 +76,7 @@ namespace wzUtility.CooldownTracker
                             Drawing.DrawLine(startVector2.X - 1, startVector2.Y + 1, startVector2.X - 13, startVector2.Y + 13, 1f, Color.Black);
 
                             Text.TextValue = Math.Floor(time).ToString();
-                            Text.Position = new Vector2(startVector2.X - 40, startVector2.Y - 2);
+                            Text.Position = new Vector2(startVector2.X - 21 - (Text.TextValue.Length * 5), startVector2.Y - 1);
                             Text.Draw();
                         }
                     }
@@ -88,7 +89,7 @@ namespace wzUtility.CooldownTracker
                             Drawing.DrawLine(startVector2.X - 1, startVector2.Y + 15, startVector2.X - 13, startVector2.Y + 27, 1f, Color.Black);
                             
                             Text.TextValue = Math.Floor(time).ToString();
-                            Text.Position = new Vector2(startVector2.X - 40, startVector2.Y + 15);
+                            Text.Position = new Vector2(startVector2.X - 21 - (Text.TextValue.Length * 5), startVector2.Y + 15);
                             Text.Draw();
                         }
                     }
