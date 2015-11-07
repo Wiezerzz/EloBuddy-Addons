@@ -12,8 +12,8 @@ namespace wzUtility.TowerRange
 {
     class TowerRange
     {
-        private static Menu menu, towerRangeMenu;
-        private static Dictionary<int, Obj_AI_Turret> turrets = new Dictionary<int, Obj_AI_Turret>();
+        private Menu menu, towerRangeMenu;
+        private Dictionary<int, Obj_AI_Turret> turrets = new Dictionary<int, Obj_AI_Turret>();
 
         public TowerRange(Menu mainMenu)
         {
@@ -39,7 +39,7 @@ namespace wzUtility.TowerRange
             Drawing.OnDraw += Drawing_OnDraw;
         }
 
-        private static void Drawing_OnDraw(EventArgs args)
+        private void Drawing_OnDraw(EventArgs args)
         {
             float turretRange = 800 + Player.Instance.BoundingRadius;
             int drawRange = towerRangeMenu["rangetodraw"].Cast<Slider>().CurrentValue;

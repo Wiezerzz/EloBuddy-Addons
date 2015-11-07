@@ -12,6 +12,7 @@ namespace wzUtility
         private static CooldownTracker.Tracker cooldownTracker;
         private static TowerRange.TowerRange towerRange;
         private static WardTracker.Tracker wardTracker;
+        private static RecallTracker.Tracker recallTracker;
 
         private static void Main(string[] args)
         {
@@ -29,6 +30,8 @@ namespace wzUtility
             menu.Add("loadcooldowntracker", new CheckBox("Load Cooldown Tracker plugin"));
             menu.Add("loadtowerrangeindicator", new CheckBox("Load Tower Range Indicator plugin"));
             menu.Add("loadwardtracker", new CheckBox("Load Ward Tracker plugin"));
+            menu.Add("loadrecalltracker", new CheckBox("Load Recall Tracker plugin"));
+
 
             if (menu["loadcooldowntracker"].Cast<CheckBox>().CurrentValue)
                 cooldownTracker = new CooldownTracker.Tracker(menu);
@@ -38,6 +41,9 @@ namespace wzUtility
 
             if (menu["loadwardtracker"].Cast<CheckBox>().CurrentValue)
                 wardTracker = new WardTracker.Tracker(menu);
+
+            if (menu["loadrecalltracker"].Cast<CheckBox>().CurrentValue)
+                recallTracker = new RecallTracker.Tracker(menu);
         }
     }
 }

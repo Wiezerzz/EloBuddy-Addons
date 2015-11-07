@@ -14,10 +14,10 @@ namespace wzUtility.CooldownTracker
     class Tracker
     {
 
-        private static Menu menu, cooldownTrackerMenu;
-        private static readonly SpellSlot[] summonerSpellSlots = { SpellSlot.Summoner1, SpellSlot.Summoner2 };
-        private static readonly SpellSlot[] spellSlots = { SpellSlot.Q, SpellSlot.W, SpellSlot.E, SpellSlot.R };
-        private static Text Text { get; set; }
+        private Menu menu, cooldownTrackerMenu;
+        private readonly SpellSlot[] summonerSpellSlots = { SpellSlot.Summoner1, SpellSlot.Summoner2 };
+        private readonly SpellSlot[] spellSlots = { SpellSlot.Q, SpellSlot.W, SpellSlot.E, SpellSlot.R };
+        private Text Text { get; set; }
 
         public Tracker(Menu mainMenu)
         {
@@ -42,7 +42,7 @@ namespace wzUtility.CooldownTracker
             AppDomain.CurrentDomain.ProcessExit += OnDomainUnload;
         }
 
-        private static void Drawing_OnDraw(EventArgs args)
+        private void Drawing_OnDraw(EventArgs args)
         {
             foreach (AIHeroClient hero in EntityManager.Heroes.AllHeroes)
             {
@@ -154,7 +154,6 @@ namespace wzUtility.CooldownTracker
                             Text.Position = new Vector2(startVector2.X + Xoffset + 13 - (Text.TextValue.Length * 3), startVector2.Y + 29);
                             Text.Draw();
                         }
-
                     }
                     else
                     {
@@ -168,7 +167,7 @@ namespace wzUtility.CooldownTracker
             }
         }
 
-        private static Color GetSummonerColor(string name)
+        private Color GetSummonerColor(string name)
         {
             Color color;
 
@@ -226,7 +225,7 @@ namespace wzUtility.CooldownTracker
         }
 
         //Not in use atm.
-        private static string GetSummonerSpellName(string name)
+        private string GetSummonerSpellName(string name)
         {
             string text = "";
 
@@ -280,7 +279,7 @@ namespace wzUtility.CooldownTracker
             return text;
         }
 
-        private static void OnDomainUnload(object sender, EventArgs e)
+        private void OnDomainUnload(object sender, EventArgs e)
         {
             if (Text == null) return;
 

@@ -14,14 +14,11 @@ namespace wzUtility.WardTracker
 {
     class Tracker
     {
-        private static Menu menu, wardTrackerMenu;
-        private static Text Text;
+        private Menu menu, wardTrackerMenu;
+        private Text Text;
 
-        private static Dictionary<int, WardObject> wards = new Dictionary<int, WardObject>(); 
-        private static List<WardObject> fovWards = new List<WardObject>(); 
-
-        //TODO: FOW ward placement.
-        //Text align not more needed
+        private Dictionary<int, WardObject> wards = new Dictionary<int, WardObject>(); 
+        private List<WardObject> fovWards = new List<WardObject>(); 
 
         public Tracker(Menu mainMenu)
         {
@@ -35,10 +32,7 @@ namespace wzUtility.WardTracker
 
             Text = new Text("", new Font(FontFamily.GenericSansSerif, 8, FontStyle.Bold))
             {
-                Color = Color.AntiqueWhite,
-
-                TextAlign = Text.Align.Center,
-                TextOrientation = Text.Orientation.Center
+                Color = Color.AntiqueWhite
             };
 
             Drawing.OnDraw += Drawing_OnDraw;
@@ -48,7 +42,7 @@ namespace wzUtility.WardTracker
             AppDomain.CurrentDomain.ProcessExit += OnDomainUnload;
         }
 
-        private static void Drawing_OnDraw(EventArgs args)
+        private void Drawing_OnDraw(EventArgs args)
         {
             #region Visible wards
 
@@ -106,7 +100,7 @@ namespace wzUtility.WardTracker
             #endregion
         }
 
-        private static void GameObject_OnCreate(GameObject sender, EventArgs args)
+        private void GameObject_OnCreate(GameObject sender, EventArgs args)
         {
             #region Visible wards
 
@@ -153,7 +147,7 @@ namespace wzUtility.WardTracker
                             }
                         }
                     }
-                }, 500);
+                }, 100);
             }
 
             #endregion
@@ -183,7 +177,7 @@ namespace wzUtility.WardTracker
             #endregion
         }
 
-        private static void GameObject_OnDelete(GameObject sender, EventArgs args)
+        private void GameObject_OnDelete(GameObject sender, EventArgs args)
         {
             if (sender.Type != GameObjectType.obj_AI_Minion)
                 return;
@@ -194,7 +188,7 @@ namespace wzUtility.WardTracker
                 Core.DelayAction(() => wards.Remove(ward.NetworkId), 0);
         }
 
-        private static void OnDomainUnload(object sender, EventArgs e)
+        private void OnDomainUnload(object sender, EventArgs e)
         {
             if (Text == null) return;
 

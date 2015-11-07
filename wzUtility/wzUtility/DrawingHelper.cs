@@ -21,5 +21,15 @@ namespace wzUtility
                 Drawing.DrawLine(X, Y + i, X + Width, Y + i, 1, color);
             }
         }
+
+        //http://stackoverflow.com/questions/6394304/algorithm-how-do-i-fade-from-red-to-green-via-yellow-using-rgb-values @Vorspire
+        public static Color Interpolate(Color source, Color target, double percent)
+        {
+            var r = (byte)(source.R + (target.R - source.R) * percent);
+            var g = (byte)(source.G + (target.G - source.G) * percent);
+            var b = (byte)(source.B + (target.B - source.B) * percent);
+
+            return Color.FromArgb(255, r, g, b);
+        }
     }
 }
