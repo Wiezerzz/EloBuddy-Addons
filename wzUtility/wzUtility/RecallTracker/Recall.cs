@@ -2,7 +2,7 @@
 
 namespace wzUtility.RecallTracker
 {
-    class Recall
+    internal class Recall
     {
         public Recall(string name, float healthPercent, float endTime, float duration)
         {

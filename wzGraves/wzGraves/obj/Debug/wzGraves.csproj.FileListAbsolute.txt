@@ -1,0 +1,11 @@
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\bin\Debug\wzGraves.exe.config
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\bin\Debug\wzGraves.exe
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\bin\Debug\wzGraves.pdb
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\bin\Debug\EloBuddy.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\bin\Debug\EloBuddy.SDK.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\bin\Debug\SharpDX.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\bin\Debug\SharpDX.Direct3D9.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\obj\Debug\wzGraves.csprojResolveAssemblyReference.cache
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\obj\Debug\wzGraves.exe
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\obj\Debug\wzGraves.pdb
