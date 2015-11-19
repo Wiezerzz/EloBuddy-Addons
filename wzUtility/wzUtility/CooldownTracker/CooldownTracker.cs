@@ -37,12 +37,12 @@ namespace wzUtility.CooldownTracker
                 TextOrientation = Text.Orientation.Center
             };
 
-            Drawing.OnEndScene += Drawing_OnDraw;
+            Drawing.OnEndScene += Drawing_OnEndScene;
             AppDomain.CurrentDomain.DomainUnload += OnDomainUnload;
             AppDomain.CurrentDomain.ProcessExit += OnDomainUnload;
         }
 
-        private void Drawing_OnDraw(EventArgs args)
+        private void Drawing_OnEndScene(EventArgs args)
         {
             foreach (AIHeroClient hero in EntityManager.Heroes.AllHeroes)
             {
