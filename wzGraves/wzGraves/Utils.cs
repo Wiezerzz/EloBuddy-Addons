@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
 using SharpDX;
@@ -52,6 +52,16 @@ namespace wzGraves
                 if (NavMesh.GetCollisionFlags(wallPosition).HasFlag(CollisionFlags.Wall) || NavMesh.GetCollisionFlags(wallPosition).HasFlag(CollisionFlags.Building))
                     return true;
             }
+
+            return false;
+        }
+
+        public static bool IsMatureMonster(this Obj_AI_Base monster)
+        {
+            string[] array = { "SRU_Baron", "SRU_RiftHerald", "SRU_Dragon", "Sru_Crab", "SRU_Krug", "SRU_Red", "SRU_Blue", "SRU_Red", "SRU_Gromp", "SRU_Razorbeak", "SRU_Murkwolf" };
+
+            if (array.Contains(monster.BaseSkinName))
+                return true;
 
             return false;
         }

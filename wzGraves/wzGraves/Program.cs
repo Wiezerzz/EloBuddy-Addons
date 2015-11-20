@@ -24,6 +24,10 @@ namespace wzGraves
             {"r", new Spell.Skillshot(SpellSlot.R, 1500, SkillShotType.Linear, 250, 2100, 100)}
         };
 
+        private static readonly ColorBGRA drawingsColour = new ColorBGRA(210, 100, 0, 255);
+
+        //---------------------------------------------------------------------------------------------------------------//
+
         private static void Main(string[] args)
         {
             Loading.OnLoadingComplete += Loading_OnLoadingComplete;
@@ -75,6 +79,7 @@ namespace wzGraves
             jungleclearMenu.AddGroupLabel("Jungleclear");
 
             jungleclearMenu.Add("jungleclearq", new CheckBox("Use Q"));
+            jungleclearMenu.Add("junglecleare", new CheckBox("Use E", false));
             #endregion
 
             #region Drawings Menu
@@ -114,15 +119,13 @@ namespace wzGraves
 
         private static void Drawing_OnDraw(EventArgs args)
         {
-            ColorBGRA color = new ColorBGRA(210, 100, 0, 255);
-
             foreach (KeyValuePair<string, Spell.Skillshot> spell in Spells)
             {
                 if (drawingsMenu["draw" + spell.Key].Cast<CheckBox>().CurrentValue)
                 {
                     if (drawingsMenu["drawready"].Cast<CheckBox>().CurrentValue && spell.Value.IsReady() || !drawingsMenu["drawready"].Cast<CheckBox>().CurrentValue)
                     {
-                        Circle.Draw(color, spell.Value.Range, Player.Instance.Position);
+                        Circle.Draw(drawingsColour, spell.Value.Range, Player.Instance.Position);
                     }
                 }
             }
@@ -130,15 +133,31 @@ namespace wzGraves
 
         private static void Orbwalker_OnPostAttack(AttackableUnit target, EventArgs args)
         {
-            if (Orbwalker.ActiveModesFlags == Orbwalker.ActiveModes.Combo && comboMenu["comboe"].Cast<CheckBox>().CurrentValue && !Player.HasBuff("GravesBasicAttackAmmo2"))
+            if(Player.HasBuff("GravesBasicAttackAmmo2") || !Spells["e"].IsReady())
+                return;
+
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) && comboMenu["comboe"].Cast<CheckBox>().CurrentValue)
             {
-                if (Spells["e"].IsReady())
+                if (target.Type == GameObjectType.AIHeroClient)
                 {
                     //Weird fix for BUG: Spells["e"].Cast(Game.CursorPos); not casting sometimes.
                     if (Player.CastSpell(SpellSlot.E, Game.CursorPos))
                         Orbwalker.ResetAutoAttack();
                 }
             }
+
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear) && jungleclearMenu["junglecleare"].Cast<CheckBox>().CurrentValue)
+            {
+                Obj_AI_Minion jungleMob = (Obj_AI_Minion)target;
+
+                if (jungleMob != null && jungleMob.IsMatureMonster())
+                {
+                    //Weird fix for BUG: Spells["e"].Cast(Game.CursorPos); not casting sometimes.
+                    if (Player.CastSpell(SpellSlot.E, Game.CursorPos))
+                        Orbwalker.ResetAutoAttack();
+                }
+            }
+
         }
         #endregion
 
@@ -181,7 +200,7 @@ namespace wzGraves
 
             foreach (Obj_AI_Minion minion in EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.Position, Spells["q"].Range))
             {
-                if (Spells["q"].GetPrediction(minion).CollisionObjects.Count() >= 3 && !Player.Instance.CheckWallCollison(minion.Position))
+                if (minion.IsValidTarget(Spells["q"].Range) && Spells["q"].GetPrediction(minion).CollisionObjects.Count() >= 3 && !Player.Instance.CheckWallCollison(minion.Position))
                 {
                     if (Spells["q"].Cast(minion.Position))
                         return;
@@ -196,11 +215,12 @@ namespace wzGraves
 
             Obj_AI_Minion jungleMob = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.Position, Spells["q"].Range).OrderByDescending(x => x.MaxHealth).FirstOrDefault();
 
-            if (jungleMob != null && !Player.Instance.CheckWallCollison(jungleMob.Position))
-                Spells["q"].Cast(jungleMob);
+            if (jungleMob != null && jungleMob.IsMatureMonster() && jungleMob.IsValidTarget(Spells["q"].Range) && !Player.Instance.CheckWallCollison(jungleMob.Position))
+                CastWallQ(jungleMob);
         }
         #endregion
 
+        #region Spell Methods
         private static void HandleQ()
         {
             if (!Spells["q"].IsReady())
@@ -227,7 +247,7 @@ namespace wzGraves
             }
         }
 
-        private static bool CastWallQ(AIHeroClient target)
+        private static bool CastWallQ(Obj_AI_Base target)
         {
             //400 castdelay instead of 250.
             PredictionResult pred = Prediction.Position.PredictLinearMissile(target, 850f, 60, 400, 2000f, 0, Player.Instance.Position, true);
@@ -251,7 +271,7 @@ namespace wzGraves
             return false;
         }
 
-        private static void CastBombQ(AIHeroClient target)
+        private static void CastBombQ(Obj_AI_Base target)
         {
             PredictionResult pred = Prediction.Position.PredictLinearMissile(target, 850f, 80, 1250, 2000f, 0, Player.Instance.Position, true);
 
@@ -287,7 +307,7 @@ namespace wzGraves
             if (!Spells["r"].IsReady())
                 return;
 
-            foreach (AIHeroClient enemy in EntityManager.Heroes.Enemies.Where(x => Player.Instance.Distance(x) > 700 && x.IsValidTarget(Spells["r"].Range) && x.Health < Spells["r"].CalculateRDamage(x)))
+            foreach (AIHeroClient enemy in EntityManager.Heroes.Enemies.Where(x => Player.Instance.Distance(x) > 600 && x.IsValidTarget(Spells["r"].Range) && x.Health < Spells["r"].CalculateRDamage(x)))
             {
                 PredictionResult pred = Spells["r"].GetPrediction(enemy);
 
@@ -301,6 +321,7 @@ namespace wzGraves
                 }
             }
         }
+        #endregion
 
     }
 }
