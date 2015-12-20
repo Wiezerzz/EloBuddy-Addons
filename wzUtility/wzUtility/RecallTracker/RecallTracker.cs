@@ -65,7 +65,7 @@ namespace wzUtility.RecallTracker
             };
 
             Teleport.OnTeleport += Teleport_OnTeleport;
-            Drawing.OnDraw += Drawing_OnDraw;
+            Drawing.OnEndScene += Drawing_OnEndScene;
             AppDomain.CurrentDomain.DomainUnload += OnDomainUnload;
             AppDomain.CurrentDomain.ProcessExit += OnDomainUnload;
         }
@@ -77,7 +77,7 @@ namespace wzUtility.RecallTracker
 
             AIHeroClient player = sender as AIHeroClient;
 
-            if (player == null)// || player.IsMe || player.IsAlly)
+            if (player == null || player.IsMe || player.IsAlly)
                 return;
 
             switch (args.Status)
@@ -109,7 +109,7 @@ namespace wzUtility.RecallTracker
             }
         }
 
-        private void Drawing_OnDraw(EventArgs args)
+        private void Drawing_OnEndScene(EventArgs args)
         {
             for (int i = 0; i < Recalls.Count; i++)
             {

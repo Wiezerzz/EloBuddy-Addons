@@ -154,7 +154,7 @@ namespace wzSona
 
         private static void Interrupter_OnInterruptableSpell(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs e)
         {
-            if (!sender.IsValid || sender.IsDead || !sender.IsTargetable || sender.IsStunned || e.DangerLevel < DangerLevel.High || !Player.Instance.IsInRange(sender, Spells[SpellSlot.R].Range))
+            if (!sender.IsValid || sender.IsDead || !sender.IsTargetable || sender.IsStunned || e.DangerLevel != DangerLevel.High || !Player.Instance.IsInRange(sender, Spells[SpellSlot.R].Range))
                 return;
 
             Chat.Print("wzSona| InterruptableSpell: " + sender.Name);

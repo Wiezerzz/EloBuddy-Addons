@@ -1,0 +1,11 @@
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\bin\Debug\wzShaco.exe.config
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\bin\Debug\wzShaco.exe
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\bin\Debug\wzShaco.pdb
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\bin\Debug\EloBuddy.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\bin\Debug\EloBuddy.SDK.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\bin\Debug\SharpDX.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\bin\Debug\SharpDX.Direct3D9.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\obj\Debug\wzShaco.csprojResolveAssemblyReference.cache
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\obj\Debug\wzShaco.exe
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\obj\Debug\wzShaco.pdb

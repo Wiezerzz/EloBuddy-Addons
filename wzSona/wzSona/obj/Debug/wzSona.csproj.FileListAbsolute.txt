@@ -1,0 +1,11 @@
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\obj\Debug\wzSona.csprojResolveAssemblyReference.cache
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\bin\Debug\wzSona.exe.config
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\bin\Debug\wzSona.exe
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\bin\Debug\wzSona.pdb
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\bin\Debug\EloBuddy.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\bin\Debug\EloBuddy.SDK.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\bin\Debug\SharpDX.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\bin\Debug\SharpDX.Direct3D9.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\obj\Debug\wzSona.exe
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\obj\Debug\wzSona.pdb
