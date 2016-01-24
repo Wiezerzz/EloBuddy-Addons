@@ -50,7 +50,7 @@ namespace wzShaco
                         break;
                 }
             }
-            Chat.Print(EntityManager.Heroes.Enemies[0].Spellbook.Spells[3].SData.Name);
+
             Evade.Evade.Initialize();
 
             Shop.OnBuyItem += Shop_OnBuyItem;
