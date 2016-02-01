@@ -13,7 +13,6 @@ namespace wzUtility.CooldownTracker
 {
     class Tracker
     {
-
         private Menu menu, cooldownTrackerMenu;
         private readonly SpellSlot[] summonerSpellSlots = { SpellSlot.Summoner1, SpellSlot.Summoner2 };
         private readonly SpellSlot[] spellSlots = { SpellSlot.Q, SpellSlot.W, SpellSlot.E, SpellSlot.R };
@@ -48,7 +47,7 @@ namespace wzUtility.CooldownTracker
             {
                 if (!hero.IsHPBarRendered || !hero.HPBarPosition.IsOnScreen() || hero.IsDead || hero.IsMe || (hero.IsAlly && !cooldownTrackerMenu["trackallies"].Cast<CheckBox>().CurrentValue) || (hero.IsEnemy && !cooldownTrackerMenu["trackenemies"].Cast<CheckBox>().CurrentValue))
                     continue;
-
+                
                 //hero.HPBarYOffset = 0.4f;
 
                 Vector2 startVector2 = new Vector2(hero.HPBarPosition.X - 1f, hero.HPBarPosition.Y + (hero.IsAlly ? 0f : 2f));

@@ -260,8 +260,9 @@ namespace wzGraves
             for (int i = 0; i < pred.CastPosition.Distance(QEndPosition); i += 30)
             {
                 Vector3 wallPosition = pred.CastPosition.ExtendVector3(QEndPosition, pred.CastPosition.Distance(QEndPosition) - i);
+                CollisionFlags collisionFlags = NavMesh.GetCollisionFlags(wallPosition);
 
-                if (NavMesh.GetCollisionFlags(wallPosition).HasFlag(CollisionFlags.Wall) || NavMesh.GetCollisionFlags(wallPosition).HasFlag(CollisionFlags.Building))
+                if (collisionFlags.HasFlag(CollisionFlags.Wall) || collisionFlags.HasFlag(CollisionFlags.Building))
                 {
                     if (Spells["q"].Cast(pred.CastPosition))
                         return true;

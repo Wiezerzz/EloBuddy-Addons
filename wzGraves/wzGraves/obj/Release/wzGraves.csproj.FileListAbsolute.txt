@@ -1,0 +1,10 @@
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\bin\Release\wzGraves.exe.config
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\bin\Release\wzGraves.exe
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\bin\Release\wzGraves.pdb
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\bin\Release\EloBuddy.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\bin\Release\EloBuddy.SDK.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\bin\Release\SharpDX.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\bin\Release\SharpDX.Direct3D9.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\bin\Release\Newtonsoft.Json.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\obj\Release\wzGraves.exe
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\obj\Release\wzGraves.pdb

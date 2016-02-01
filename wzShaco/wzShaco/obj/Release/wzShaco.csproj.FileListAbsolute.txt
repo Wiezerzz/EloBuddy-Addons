@@ -1,0 +1,10 @@
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\bin\Release\wzShaco.exe.config
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\bin\Release\wzShaco.exe
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\bin\Release\wzShaco.pdb
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\bin\Release\EloBuddy.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\bin\Release\EloBuddy.SDK.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\bin\Release\SharpDX.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\bin\Release\SharpDX.Direct3D9.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\bin\Release\Newtonsoft.Json.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\obj\Release\wzShaco.exe
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\obj\Release\wzShaco.pdb

@@ -16,7 +16,7 @@ namespace wzShaco
     {
         private static Item Tiamat;
         private static Item Hydra;
-        private static bool isEvadingSkill = false;
+        private static bool isEvadingSkill;
 
         private static readonly Dictionary<string, Spell.SpellBase> Spells = new Dictionary<string, Spell.SpellBase>
         {
@@ -51,6 +51,7 @@ namespace wzShaco
                 }
             }
 
+            Player.Instance.SetSkinId(7);
             Evade.Evade.Initialize();
 
             Shop.OnBuyItem += Shop_OnBuyItem;
@@ -182,7 +183,7 @@ namespace wzShaco
                 AIHeroClient targetQ = TargetSelector.GetTarget(Spells["q"].Range, DamageType.Physical);
                 CastBackstabQ(targetQ);
 
-                if (!Player.HasBuff("Deceive"))
+                if (!Player.HasBuff("Deceive") && !Orbwalker.IsAutoAttacking)
                 {
                     AIHeroClient targetE = TargetSelector.GetTarget(Spells["e"].Range, DamageType.Mixed);
                     CastE(targetE);
@@ -194,6 +195,9 @@ namespace wzShaco
                 AIHeroClient targetE = TargetSelector.GetTarget(Spells["e"].Range, DamageType.Mixed);
                 CastE(targetE);
             }
+
+            if (Player.Instance.Pet != null && Orbwalker.ForcedTarget != null)
+                Player.IssueOrder(GameObjectOrder.AutoAttackPet, Orbwalker.ForcedTarget);
         }
 
         private static bool CastE(AIHeroClient target)

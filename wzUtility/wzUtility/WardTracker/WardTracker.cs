@@ -18,7 +18,6 @@ namespace wzUtility.WardTracker
         private Text Text;
 
         private Dictionary<int, WardObject> wards = new Dictionary<int, WardObject>(); 
-        private List<WardObject> fovWards = new List<WardObject>(); 
 
         public Tracker(Menu mainMenu)
         {
@@ -73,31 +72,6 @@ namespace wzUtility.WardTracker
             }
 
             #endregion
-
-            #region FOW wards
-
-            foreach (WardObject ward in fovWards)
-            {
-                if(ward.Expires < Game.Time)
-                {
-                    if (fovWards.Contains(ward))
-                        Core.DelayAction(() => fovWards.Remove(ward), 0);
-                }
-
-                if (!ward.Position.IsOnScreen())
-                    continue;
-
-                Circle.Draw(new ColorBGRA(0, 180, 0, 200), wardTrackerMenu["wardrange"].Cast<Slider>().CurrentValue, ward.Position);
-
-                if (wardTrackerMenu["showtime"].Cast<CheckBox>().CurrentValue)
-                {
-                    Text.TextValue = string.Format("??{0:mm\\:ss}??", TimeSpan.FromSeconds(ward.Expires - Game.Time));
-                    Text.Position = ward.Position.WorldToScreen() - new Vector2(Text.Bounding.Width / 2, -16);
-                    Text.Draw();
-                }
-            }
-
-            #endregion
         }
 
         private void GameObject_OnCreate(GameObject sender, EventArgs args)
@@ -110,70 +84,55 @@ namespace wzUtility.WardTracker
 
                 if (ward == null || !ward.IsEnemy)
                     return;
-
+                
                 if (wards.ContainsKey(ward.NetworkId))
                 {
-                    wards[ward.NetworkId].Expires = Game.Time + ward.Mana;
-                    wards[ward.NetworkId].Position = ward.ServerPosition;
+                    Core.DelayAction(() =>
+                    {
+                        Obj_AI_Minion tempWard = ObjectManager.GetUnitByNetworkId((uint)ward.NetworkId) as Obj_AI_Minion;
+
+                        wards[ward.NetworkId].Expires = Game.Time + (tempWard.GetBuff("sharedwardbuff").EndTime - Game.Time);
+                        wards[ward.NetworkId].Position = tempWard.ServerPosition;
+                    }, 1);
                     return;
                 }
 
                 switch (ward.Name)
                 {
                     case "SightWard":
-                        wards.Add(ward.NetworkId,
-                            new WardObject(ward.Name, false, (int) ward.Mana, (int) ward.MaxMana, Game.Time + ward.Mana,
-                                ward.Position));
+                        Core.DelayAction(() =>
+                        {
+                            Obj_AI_Minion tempWard = ObjectManager.GetUnitByNetworkId((uint) ward.NetworkId) as Obj_AI_Minion;
+                            BuffInstance buff = tempWard.GetBuff("sharedwardbuff");
+
+                            if (buff != null)
+                                wards.Add(ward.NetworkId, new WardObject(false, ((AIHeroClient)buff.Caster).ChampionName, Game.Time + (buff.EndTime - Game.Time), ward.Position));
+                        }, 1);
+
                         break;
                     case "VisionWard":
-                        wards.Add(ward.NetworkId,
-                            ward.BaseSkinName == "SightWard"
-                                ? new WardObject(ward.Name, false, (int) ward.Mana, (int) ward.MaxMana,
-                                    Game.Time + ward.Mana, ward.Position)
-                                : new WardObject(ward.Name, true, (int) ward.Mana, (int) ward.MaxMana, 0, ward.Position));
+                        Core.DelayAction(() =>
+                        {
+                            Obj_AI_Minion tempWard = ObjectManager.GetUnitByNetworkId((uint) ward.NetworkId) as Obj_AI_Minion;
+                            BuffInstance buff = tempWard.GetBuff("sharedwardbuff");
+
+                            if (buff != null)
+                            {
+                                wards.Add(ward.NetworkId, new WardObject(false, ((AIHeroClient)buff.Caster).ChampionName, Game.Time + (buff.EndTime - Game.Time), ward.Position));
+                            }
+                            else
+                            {
+                                buff = tempWard.GetBuff("sharedvisionwardbuff");
+                                if (buff == null)
+                                    return;
+
+                                wards.Add(ward.NetworkId, new WardObject(true, ((AIHeroClient)buff.Caster).ChampionName, float.MaxValue, ward.Position));
+                            }
+                        }, 1);
                         break;
                 }
-
-                Core.DelayAction(() =>
-                {
-                    if (ward.IsValid && !ward.IsDead)
-                    {
-                        foreach (var fovward in fovWards)
-                        {
-                            if (fovward.Position.Distance(ward.Position) < 570)
-                            {
-                                Core.DelayAction(() => fovWards.Remove(fovward), 0);
-                                break;
-                            }
-                        }
-                    }
-                }, 100);
             }
 
-            #endregion
-
-            #region FOW wards
-
-            if (sender.Type == GameObjectType.MissileClient)
-            {
-                MissileClient missile = sender as MissileClient;
-
-                if (missile != null && missile.SData.Name.ToLower() == "itemplacementmissile")
-                {
-                    if (!missile.SpellCaster.IsEnemy)
-                        return;
-
-                    Vector2 dir = (missile.EndPosition.To2D() - missile.StartPosition.To2D()).Normalized();
-                    Vector3 pos = (missile.StartPosition.To2D() + dir * 570).To3DWorld();
-
-                    //if visible ward placed in the last 2 seconds then return.
-                    if (wards.Values.Any(ward => ward.Position.Distance(pos) < 570 && ward.Expires - Game.Time > ward.MaxMana - 2))
-                        return;
-
-                    fovWards.Add(new WardObject(missile.SData.Name.ToLower(), false, 180, 180, Game.Time + 180, pos));
-                }
-            }
-            
             #endregion
         }
 
