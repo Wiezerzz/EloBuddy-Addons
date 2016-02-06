@@ -7,8 +7,7 @@ namespace wzGraves
 {
     internal static class Utils
     {
-        private static readonly float[] QDamageModifier = {60f, 80f, 100f, 120f, 140f};
-        //private static readonly float[] QDamageModifier = {55f, 70f, 85f, 100f, 115f};   NOTE: Next patch 5.23
+        private static readonly float[] QDamageModifier = {55f, 70f, 85f, 100f, 115f};
         private static readonly float[] RDamageModifier = {250f, 400f, 550f};
 
         //Copied from Fluxy's YasouBuddy - He is a god and so is his yasou addon.
