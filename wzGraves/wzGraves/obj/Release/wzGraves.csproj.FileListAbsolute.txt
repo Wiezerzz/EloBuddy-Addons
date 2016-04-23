@@ -8,3 +8,5 @@ C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\bin\Release
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\bin\Release\Newtonsoft.Json.dll
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\obj\Release\wzGraves.exe
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\obj\Release\wzGraves.pdb
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\obj\Release\wzGraves.csprojResolveAssemblyReference.cache
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\bin\Release\EloBuddy.Sandbox.dll

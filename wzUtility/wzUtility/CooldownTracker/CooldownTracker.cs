@@ -50,7 +50,7 @@ namespace wzUtility.CooldownTracker
                 
                 //hero.HPBarYOffset = 0.4f;
 
-                Vector2 startVector2 = new Vector2(hero.HPBarPosition.X - 1f, hero.HPBarPosition.Y + (hero.IsAlly ? 0f : 2f));
+                Vector2 startVector2 = new Vector2(((int) (hero.HPBarPosition.X + 0.5f)) - 1, ((int) (hero.HPBarPosition.Y + 0.5f)) + 2);
 
                 #region SummmonersBar Block
                 DrawingHelper.DrawFilledRectangle(startVector2.X - 14, startVector2.Y, 14, 29, Color.FromArgb(115, 113, 115)); // light gray box

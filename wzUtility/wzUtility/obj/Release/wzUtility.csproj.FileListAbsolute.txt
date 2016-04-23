@@ -9,3 +9,4 @@ C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzUtility\wzUtility\bin\Relea
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzUtility\wzUtility\obj\Release\wzUtility.csprojResolveAssemblyReference.cache
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzUtility\wzUtility\obj\Release\wzUtility.exe
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzUtility\wzUtility\obj\Release\wzUtility.pdb
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzUtility\wzUtility\bin\Release\EloBuddy.Sandbox.dll

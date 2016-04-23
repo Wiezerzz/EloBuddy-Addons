@@ -8,3 +8,5 @@ C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\bin\Release\S
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\bin\Release\Newtonsoft.Json.dll
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\obj\Release\wzShaco.exe
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\obj\Release\wzShaco.pdb
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\obj\Release\wzShaco.csprojResolveAssemblyReference.cache
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzShaco\wzShaco\bin\Release\EloBuddy.Sandbox.dll

@@ -10,3 +10,4 @@ C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\bin\Release
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\obj\Debug\wzGraves.csprojResolveAssemblyReference.cache
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\obj\Debug\wzGraves.exe
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\obj\Debug\wzGraves.pdb
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzGraves\wzGraves\bin\Release\EloBuddy.Sandbox.dll

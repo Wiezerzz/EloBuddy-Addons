@@ -8,3 +8,5 @@ C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\bin\Release\Sha
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\bin\Release\Newtonsoft.Json.dll
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\obj\Release\wzSona.exe
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\obj\Release\wzSona.pdb
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\obj\Release\wzSona.csprojResolveAssemblyReference.cache
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\bin\Release\EloBuddy.Sandbox.dll
