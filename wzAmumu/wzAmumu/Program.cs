@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.AccessControl;
-using System.Threading;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Enumerations;
@@ -14,306 +11,185 @@ using SharpDX;
 
 namespace wzAmumu
 {
-    class Program
+    public class Program
     {
-        private static Menu menu, comboMenu, harassMenu, farmMenu, autowMenu, drawingsMenu;
+        private static Menu _menu, _comboMenu, _harassMenu, _laneclearMenu, _jungleclearMenu, _drawingsMenu;
+        private static readonly string[] Skins = { "Classic", "Pharaoh", "Vancouver", "Emumu", "Re-Gifted", "Almost Prom King", "Little Knight", "Sad Robot", "Suprise Party" };
+        private static readonly Spell.Skillshot Q = new Spell.Skillshot(SpellSlot.Q, 1100, SkillShotType.Linear, 250, 2000, 80);
+        private static readonly Spell.Active W = new Spell.Active(SpellSlot.W, 300);
+        private static readonly Spell.Active E = new Spell.Active(SpellSlot.E, 350); //CastDelay: 500
+        private static readonly Spell.Active R = new Spell.Active(SpellSlot.R, 550); //CastDelay: 250
 
-        private static readonly Dictionary<SpellSlot, Spell.SpellBase> spells = new Dictionary<SpellSlot, Spell.SpellBase>
-        {
-            {SpellSlot.Q, new Spell.Skillshot(SpellSlot.Q, 1080, SkillShotType.Linear, 250, 2000, 90)},
-            {SpellSlot.W, new Spell.Active(SpellSlot.W, 300)},
-            {SpellSlot.E, new Spell.Active(SpellSlot.E, 330)},
-            {SpellSlot.R, new Spell.Active(SpellSlot.R, 550)}
-        };
-
-        private static readonly List<KeyValuePair<string, SpellSlot>> drawSpellsList = new List<KeyValuePair<string, SpellSlot>>
-        {
-            new KeyValuePair<string, SpellSlot>("q", SpellSlot.Q),
-            new KeyValuePair<string, SpellSlot>("w", SpellSlot.W),
-            new KeyValuePair<string, SpellSlot>("e", SpellSlot.E),
-            new KeyValuePair<string, SpellSlot>("r", SpellSlot.R)
-        };
-
-        private static readonly string[] SmiteNames = { "s5_summonersmiteplayerganker", "itemsmiteaoe", "s5_summonersmitequick", "s5_summonersmiteduel", "summonersmite" };
-        private static Spell.Targeted Smite;
-
-        //Rewrite menu: QWER.
-
-        static void Main(string[] args)
+        private static void Main()
         {
             Loading.OnLoadingComplete += Loading_OnLoadingComplete;
         }
 
-        static void Loading_OnLoadingComplete(EventArgs args)
+        private static void Loading_OnLoadingComplete(EventArgs args)
         {
             if (Player.Instance.Hero != Champion.Amumu)
                 return;
 
-            #region Init Smite
-            //FIX THIS SHIT OMFG.
-            if (SmiteNames.Contains(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Summoner1).Name))
-            {
-                Smite = new Spell.Targeted(SpellSlot.Summoner1, 500);
-            }
-            if (SmiteNames.Contains(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Summoner2).Name))
-            {
-                Smite = new Spell.Targeted(SpellSlot.Summoner2, 500);
-            }
-            #endregion
-
             Bootstrap.Init(null);
 
-            #region Main Menu
-            menu = MainMenu.AddMenu("wzAmumu", "wzamumu");
-            menu.AddGroupLabel("wzAmumu");
-            menu.AddLabel("This is my little retarded baby addon, so no hate plz.");
-            #endregion
+            CreateMenu();
 
-            #region Combo Menu
-            comboMenu = menu.AddSubMenu("Combo", "combomenu");
-            comboMenu.AddGroupLabel("Combo");
-
-            comboMenu.Add("combouseq", new CheckBox("Use Q"));
-            comboMenu.Add("combousesmiteq", new CheckBox("Use Smite+Q Combo", false));
-            comboMenu.AddSeparator();
-            comboMenu.Add("combousee", new CheckBox("Use E"));
-            comboMenu.AddSeparator();
-            comboMenu.Add("combouser", new CheckBox("Auto R"));
-            comboMenu.Add("comboautor", new Slider("Targets in R range", 3, 2, 5));
-            #endregion
-
-            #region Harass Menu
-            harassMenu = menu.AddSubMenu("Harass", "harassmenu");
-            harassMenu.AddGroupLabel("Harass");
-
-            harassMenu.Add("harassuseq", new CheckBox("Use Q", false));
-            harassMenu.AddSeparator();
-            harassMenu.Add("harassusee", new CheckBox("Use E"));
-            #endregion
-
-            #region Farm Menu
-            farmMenu = menu.AddSubMenu("Farm", "farmmenu");
-            farmMenu.AddGroupLabel("Lane Clear");
-
-            farmMenu.Add("laneclearuseq", new CheckBox("Use Q", false));
-            farmMenu.AddSeparator();
-            farmMenu.Add("laneclearusee", new CheckBox("Use E"));
-            farmMenu.Add("laneclearcounte", new Slider("Minions in E range to use E", 3, 1, 6));
-            farmMenu.AddSeparator();
-
-            farmMenu.AddGroupLabel("Jungle Clear");
-            farmMenu.Add("jungleclearuseq", new CheckBox("Use Q"));
-            farmMenu.AddSeparator();
-            farmMenu.Add("jungleclearusee", new CheckBox("Use E"));
-            #endregion
-
-            #region Auto W Menu
-            autowMenu = menu.AddSubMenu("Auto W", "autowmenu");
-            autowMenu.AddGroupLabel("Auto W Control");
-
-            autowMenu.Add("autousew", new CheckBox("Auto W"));
-            autowMenu.Add("autowmana", new Slider("Use W until Mana %", 10));
-            #endregion
-
-            #region Drawings Menu
-            drawingsMenu = menu.AddSubMenu("Drawings", "drawingsmenu");
-            drawingsMenu.AddGroupLabel("Drawings");
-
-            drawingsMenu.Add("drawq", new CheckBox("Draw Q"));
-            drawingsMenu.Add("draww", new CheckBox("Draw W", false));
-            drawingsMenu.Add("drawe", new CheckBox("Draw E", false));
-            drawingsMenu.Add("drawr", new CheckBox("Draw R"));
-            drawingsMenu.AddSeparator();
-            drawingsMenu.Add("drawready", new CheckBox("Only draw when ready"));
-            #endregion
+            Q.AllowedCollisionCount = 0;
 
             Game.OnUpdate += Game_OnUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
         }
 
-        static void Game_OnUpdate(EventArgs args)
+        private static void CreateMenu()
         {
-            AutoR();
+            #region Main Menu
 
-            switch (Orbwalker.ActiveModesFlags)
-            {
-                case Orbwalker.ActiveModes.Combo:
-                    Combo();
-                    break;
-                case Orbwalker.ActiveModes.Harass:
-                    Harass();
-                    break;
-                default:
-                    //Turn off W when recalling.
-                    if (Player.Instance.IsRecalling() && spells[SpellSlot.W].Handle.ToggleState == 2)
-                        spells[SpellSlot.W].Cast();
-                    break;
-            }
+            _menu = MainMenu.AddMenu("wzAmumu", "wzamumu");
+            _menu.AddLabel("This is my little retarded baby addon, so no hate plz.");
+            _menu.AddSeparator(0);
+            ComboBox skinComboBox = new ComboBox("Change skin", Skins, Player.Instance.SkinId);
+            _menu.Add("skinhack", skinComboBox);
+            skinComboBox.OnValueChange += SkinComboBox_OnValueChange;
 
-            //Fix for: if someone has binded Laneclear and jungleclear on the same key.
-            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear))
-                LaneClear();
-            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear))
-                JungleClear();
+            #endregion
+
+            #region Combo Menu
+
+            _comboMenu = _menu.AddSubMenu("Combo", "combomenu");
+
+            _comboMenu.Add("useq", new CheckBox("Use Q"));
+            _comboMenu.Add("usee", new CheckBox("Use E"));
+            _comboMenu.Add("useqsmite", new CheckBox("Use Q + Smite", false));
+            _comboMenu.Add("user", new CheckBox("Use R"));
+            _comboMenu.Add("countr", new Slider("Minimum enemies required to use R", 2, 1, 5));
+
+            #endregion
+
+            #region Harass Menu
+
+            _harassMenu = _menu.AddSubMenu("Harass", "harassmenu");
+
+            _harassMenu.Add("useq", new CheckBox("Use Q"));
+            _harassMenu.Add("usee", new CheckBox("Use E"));
+            _harassMenu.Add("mana", new Slider("Don't harass when mana lower than x%", 40));
+
+            #endregion
+
+            #region Laneclear Menu
+
+            _laneclearMenu = _menu.AddSubMenu("Laneclear", "laneclearmenu");
+
+            _laneclearMenu.Add("usee", new CheckBox("Use E"));
+            _laneclearMenu.Add("counte", new Slider("Minimum minions required to use E", 3, 1, 7));
+            _laneclearMenu.Add("mana", new Slider("Don't laneclear when mana lower than x%", 40));
+
+            #endregion
+
+            #region Drawings Menu
+
+            _drawingsMenu = _menu.AddSubMenu("Drawings", "drawingsmenu");
+
+            _drawingsMenu.Add("drawq", new CheckBox("Draw Q"));
+            _drawingsMenu.Add("draww", new CheckBox("Draw W", false));
+            _drawingsMenu.Add("drawe", new CheckBox("Draw E", false));
+            _drawingsMenu.Add("drawr", new CheckBox("Draw R"));
+            _drawingsMenu.AddSeparator(0);
+            _drawingsMenu.Add("drawready", new CheckBox("Only draw when ready"));
+
+            #endregion
+        }
+
+        private static void SkinComboBox_OnValueChange(ValueBase<int> sender, ValueBase<int>.ValueChangeArgs args)
+        {
+            if (args.OldValue == args.NewValue || args.NewValue < 0)
+                return;
+
+            Player.Instance.SetSkinId(args.NewValue);
+        }
+
+        private static void Game_OnUpdate(EventArgs args)
+        {
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
+                Combo(Q.IsReady() && _comboMenu["useq"].Cast<CheckBox>().CurrentValue,
+                      E.IsReady() && _comboMenu["usee"].Cast<CheckBox>().CurrentValue,
+                      R.IsReady() && _comboMenu["user"].Cast<CheckBox>().CurrentValue);
+            else if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass))
+                Harass(Q.IsReady() && _harassMenu["useq"].Cast<CheckBox>().CurrentValue,
+                       E.IsReady() && _harassMenu["usee"].Cast<CheckBox>().CurrentValue);
         }
 
         private static void Drawing_OnDraw(EventArgs args)
         {
-            //Resharper can make this look even harder than it already is with Linq but I'm just gonna let it be this way.
-            foreach (KeyValuePair<string, SpellSlot> pair in drawSpellsList)
+            bool drawReady = _drawingsMenu["drawready"].Cast<CheckBox>().CurrentValue;
+            bool drawQ = _drawingsMenu["drawq"].Cast<CheckBox>().CurrentValue && (!drawReady || Q.IsReady());
+            bool drawW = _drawingsMenu["draww"].Cast<CheckBox>().CurrentValue && (!drawReady || W.IsReady());
+            bool drawE = _drawingsMenu["drawe"].Cast<CheckBox>().CurrentValue && (!drawReady || E.IsReady());
+            bool drawR = _drawingsMenu["drawr"].Cast<CheckBox>().CurrentValue && (!drawReady || R.IsReady());
+
+            if (drawQ)
+                Circle.Draw(Color.Gray, Q.Range, Player.Instance);
+
+            if (drawW)
+                Circle.Draw(Color.Gray, W.Range, Player.Instance);
+
+            if (drawE)
+                Circle.Draw(Color.Gray, E.Range, Player.Instance);
+
+            if (drawR)
+                Circle.Draw(Color.Gray, R.Range, Player.Instance);
+        }
+
+        private static void Combo(bool useQ, bool useE, bool useR)
+        {
+            if (useR)
             {
-                if (drawingsMenu["draw" + pair.Key].Cast<CheckBox>().CurrentValue)
-                {
-                    if (drawingsMenu["drawready"].Cast<CheckBox>().CurrentValue && spells[pair.Value].IsReady() || !drawingsMenu["drawready"].Cast<CheckBox>().CurrentValue)
-                    {
-                        Circle.Draw(Color.DarkGray, spells[pair.Value].Range, Player.Instance.Position);
-                    }
-                }
+                int countR = _comboMenu["countr"].Cast<Slider>().CurrentValue;
+                int hits =
+                    EntityManager.Heroes.Enemies.Where(enemy => enemy.IsValidTarget())
+                        .Select(enemy => Prediction.Position.PredictCircularMissile(enemy, 0, (int) R.Range, 250, float.MaxValue, Player.Instance.ServerPosition, true))
+                        .Count(predictionResult => predictionResult.HitChance >= HitChance.High);
+
+                if (hits >= countR)
+                    R.Cast();
+            }
+
+            if (useQ)
+            {
+                Obj_AI_Base targetQ = TargetSelector.GetTarget(Q.Range, DamageType.Magical);
+                if (targetQ != null)
+                    Q.CastMinimumHitchance(targetQ, HitChance.High);
+            }
+            
+            if (useE)
+            {
+                if (EntityManager.Heroes.Enemies.Where(enemy => enemy.IsValidTarget())
+                    .Select(enemy => Prediction.Position.PredictCircularMissile(enemy, 0, (int) E.Range, 500, float.MaxValue, Player.Instance.ServerPosition, true))
+                    .Any(predictionResult => predictionResult.HitChance >= HitChance.High))
+                    E.Cast();
             }
         }
 
-        private static void Combo()
+        private static void Harass(bool useQ, bool useE)
         {
-            if (comboMenu["combouseq"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.Q].IsReady())
-            {
-                AIHeroClient target = TargetSelector.GetTarget(spells[SpellSlot.Q].Range, DamageType.Magical);
+            bool hasMana = Player.Instance.ManaPercent >= _harassMenu["mana"].Cast<Slider>().CurrentValue;
 
-                if (target != null && !Player.Instance.IsInAutoAttackRange(target))
-                {
-                    if (!spells[SpellSlot.Q].Cast(target) && comboMenu["combousesmiteq"].Cast<CheckBox>().CurrentValue)
-                    {
-                        PredictionResult predictionResult = Prediction.Position.PredictLinearMissile(target, spells[SpellSlot.Q].Range, 90, 250, 2000, 0, Player.Instance.ServerPosition);
-                        if (predictionResult.CollisionObjects.Count(x => x.IsValidTarget(Smite.Range) && x.IsMinion) ==
-                            1 && CastSmite(predictionResult.CollisionObjects.FirstOrDefault()))
-                        {
-                            spells[SpellSlot.Q].Cast(target);
-                        }
-                    }
-                }
+            if (!hasMana)
+                return;
+
+            if (useQ)
+            {
+                Obj_AI_Base targetQ = TargetSelector.GetTarget(Q.Range, DamageType.Magical);
+                if (targetQ != null)
+                    Q.CastMinimumHitchance(targetQ, HitChance.High);
             }
 
-            HandleW(true);
-
-            if (comboMenu["combousee"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.E].IsReady())
+            if (useE)
             {
-                AIHeroClient target = TargetSelector.GetTarget(spells[SpellSlot.E].Range, DamageType.Magical);
-
-                if (target != null)
-                    spells[SpellSlot.E].Cast();
+                if (EntityManager.Heroes.Enemies.Where(enemy => enemy.IsValidTarget())
+                    .Select(enemy => Prediction.Position.PredictCircularMissile(enemy, 0, (int) E.Range, 500, float.MaxValue, Player.Instance.ServerPosition, true))
+                    .Any(predictionResult => predictionResult.HitChance >= HitChance.High))
+                    E.Cast();
             }
-        }
-
-        private static void Harass()
-        {
-            if (harassMenu["harassuseq"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.Q].IsReady())
-            {
-                AIHeroClient target = TargetSelector.GetTarget(spells[SpellSlot.Q].Range, DamageType.Magical);
-
-                if (target != null && !Player.Instance.IsInAutoAttackRange(target))
-                    spells[SpellSlot.Q].Cast(target);
-            }
-
-            HandleW();
-
-            if (harassMenu["harassusee"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.E].IsReady())
-            {
-                AIHeroClient target = TargetSelector.GetTarget(spells[SpellSlot.E].Range, DamageType.Magical);
-
-                if (target != null)
-                    spells[SpellSlot.E].Cast();
-            }
-        }
-
-        private static void LaneClear()
-        {
-            if (farmMenu["laneclearuseq"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.Q].IsReady())
-            {
-                Obj_AI_Base minion = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.ServerPosition, spells[SpellSlot.Q].Range).OrderByDescending(x => x.MaxHealth).FirstOrDefault();
-
-                if (minion != null && !Player.Instance.IsInAutoAttackRange(minion))
-                    spells[SpellSlot.Q].Cast(minion);
-            }
-
-            HandleW();
-
-            if (farmMenu["laneclearusee"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.E].IsReady())
-            {
-                int count = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.ServerPosition, spells[SpellSlot.E].Range, false).Count();
-
-                if (count >= 3)
-                    spells[SpellSlot.E].Cast();
-            }
-        }
-
-        private static void JungleClear()
-        {
-            if (farmMenu["jungleclearuseq"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.Q].IsReady())
-            {
-                Obj_AI_Base jungleMob = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, spells[SpellSlot.Q].Range).OrderByDescending(x => x.MaxHealth).FirstOrDefault();
-
-                if (jungleMob != null && !Player.Instance.IsInAutoAttackRange(jungleMob))
-                    spells[SpellSlot.Q].Cast(jungleMob);
-            }
-
-            HandleW();
-
-            if (farmMenu["jungleclearusee"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.E].IsReady())
-            {
-                Obj_AI_Base jungleMob = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, spells[SpellSlot.E].Range, false).FirstOrDefault();
-
-                if (jungleMob != null)
-                    spells[SpellSlot.E].Cast();
-            }
-        }
-
-        private static void AutoR()
-        {
-            if (comboMenu["combouser"].Cast<CheckBox>().CurrentValue)
-            {
-                int cnt = EntityManager.Heroes.Enemies.Count(enemy => enemy.IsValid && !enemy.IsDead && enemy.Distance(Player.Instance) <= spells[SpellSlot.R].Range);
-
-                if (cnt >= comboMenu["comboautor"].Cast<Slider>().CurrentValue)
-                    spells[SpellSlot.R].Cast();
-            }
-        }
-
-        private static void HandleW(bool combomode = false)
-        {
-            if (autowMenu["autousew"].Cast<CheckBox>().CurrentValue && spells[SpellSlot.W].IsReady())
-            {
-                if (Player.Instance.ManaPercent < autowMenu["autowmana"].Cast<Slider>().CurrentValue)
-                {
-                    if (spells[SpellSlot.W].Handle.ToggleState == 2)
-                        spells[SpellSlot.W].Cast();
-
-                    return;
-                }
-
-                int minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.ServerPosition, spells[SpellSlot.W].Range).Count();
-                int jungleMobs = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.ServerPosition, spells[SpellSlot.W].Range).Count();
-
-                if (combomode)
-                {
-                    AIHeroClient target = TargetSelector.GetTarget(spells[SpellSlot.W].Range, DamageType.Magical);
-
-                    if (target != null && spells[SpellSlot.W].Handle.ToggleState == 1)
-                        spells[SpellSlot.W].Cast();
-                    else if (target == null && spells[SpellSlot.W].Handle.ToggleState == 2)
-                        spells[SpellSlot.W].Cast();
-                }
-                else
-                {
-                    if ((minions >= 3 || jungleMobs >= 1) && spells[SpellSlot.W].Handle.ToggleState == 1)
-                        spells[SpellSlot.W].Cast();
-                    else if (minions < 3 && jungleMobs < 1 && spells[SpellSlot.W].Handle.ToggleState == 2)
-                        spells[SpellSlot.W].Cast();
-                }
-            }
-        }
-
-        private static bool CastSmite(Obj_AI_Base target)
-        {
-            return Smite.IsReady() && (target.Health < Player.Instance.GetSummonerSpellDamage(target, DamageLibrary.SummonerSpells.Smite)) && Player.Instance.Spellbook.CastSpell(Smite.Slot, target);
         }
     }
 }

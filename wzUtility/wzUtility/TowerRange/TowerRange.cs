@@ -41,7 +41,7 @@ namespace wzUtility.TowerRange
 
         private void Drawing_OnDraw(EventArgs args)
         {
-            float turretRange = 800 + Player.Instance.BoundingRadius;
+            float turretRange = 775 + Player.Instance.BoundingRadius;
             int drawRange = towerRangeMenu["rangetodraw"].Cast<Slider>().CurrentValue;
 
             foreach (KeyValuePair<int, Obj_AI_Turret> entry in turrets)
@@ -59,17 +59,17 @@ namespace wzUtility.TowerRange
                     continue;
                 }
 
-                float distToTurret = Player.Instance.ServerPosition.Distance(turret.Position);
+                float distToTurret = Player.Instance.Distance(turret.ServerPosition);
                 if (distToTurret < turretRange + drawRange)
                 {
                     if (distToTurret < turretRange && turret.IsEnemy)
                     {
-                        Circle.Draw(new ColorBGRA(255, 0, 0, 255), turretRange, 5, turret.Position);
+                        Circle.Draw(new ColorBGRA(255, 0, 0, 255), turretRange, 5, turret.ServerPosition);
                         continue;
                     }
 
                     float alpha = distToTurret > turretRange ? ((turretRange + drawRange - distToTurret)/2) / (drawRange / 2) : 1f;
-                    Circle.Draw(new ColorBGRA(0, 255, 0, alpha), turretRange, 5, turret.Position);
+                    Circle.Draw(new ColorBGRA(0, 255, 0, alpha), turretRange, 5, turret.ServerPosition);
                 }
             }
         }

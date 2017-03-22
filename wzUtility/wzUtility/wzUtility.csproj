@@ -60,9 +60,11 @@
   <ItemGroup>
     <Compile Include="CooldownTracker\CooldownTracker.cs" />
     <Compile Include="DrawingHelper.cs" />
+    <Compile Include="GankAlerter\GankAlerter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecallTracker\Recall.cs" />
+    <Compile Include="RecallTracker\RecallPrediction.cs" />
     <Compile Include="RecallTracker\RecallTracker.cs" />
     <Compile Include="TowerRange\TowerRange.cs" />
     <Compile Include="WardTracker\WardObject.cs" />

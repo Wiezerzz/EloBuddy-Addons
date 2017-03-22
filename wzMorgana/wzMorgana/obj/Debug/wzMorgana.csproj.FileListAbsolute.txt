@@ -1,0 +1,11 @@
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzMorgana\wzMorgana\bin\Debug\wzMorgana.exe.config
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzMorgana\wzMorgana\bin\Debug\wzMorgana.exe
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzMorgana\wzMorgana\bin\Debug\wzMorgana.pdb
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzMorgana\wzMorgana\bin\Debug\EloBuddy.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzMorgana\wzMorgana\bin\Debug\EloBuddy.SDK.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzMorgana\wzMorgana\bin\Debug\SharpDX.Direct3D9.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzMorgana\wzMorgana\bin\Debug\SharpDX.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzMorgana\wzMorgana\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzMorgana\wzMorgana\obj\Debug\wzMorgana.csprojResolveAssemblyReference.cache
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzMorgana\wzMorgana\obj\Debug\wzMorgana.exe
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzMorgana\wzMorgana\obj\Debug\wzMorgana.pdb

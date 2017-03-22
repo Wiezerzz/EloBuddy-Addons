@@ -17,57 +17,124 @@ using Menu = EloBuddy.SDK.Menu.Menu;
 
 namespace wzUtility.RecallTracker
 {
-    class Tracker
+    public class Tracker
     {
-        private Menu menu, recallTrackerMenu;
-        private Text Text;
+        private readonly Menu _recallTrackerMenu;
+        private readonly Text _text;
 
-        private List<Recall> Recalls = new List<Recall>();
-        private float recallbarWidth = 250f;
-        private float recallbarHeight = 15f;
+        private readonly List<Recall> _recalls = new List<Recall>();
+        private readonly List<RecallPrediction> _recallPredictions = new List<RecallPrediction>(); 
+        private float _recallbarWidth = 250f;
+        private float _recallbarHeight = 15f;
 
         public Tracker(Menu mainMenu)
         {
-            menu = mainMenu;
+            #region Menu
+            _recallTrackerMenu = mainMenu.AddSubMenu("Recall Tracker", "recalltrackermenu");
+            _recallTrackerMenu.AddGroupLabel("Recall Tracker");
 
-            recallTrackerMenu = menu.AddSubMenu("Recall Tracker", "recalltrackermenu");
-            recallTrackerMenu.AddGroupLabel("Recall Tracker");
-
-            recallTrackerMenu.Add("xposition", new Slider("X Position", (int)Math.Round(Screen.PrimaryScreen.Bounds.Width * 0.4083333333333333d), 0, Screen.PrimaryScreen.Bounds.Width));
-            recallTrackerMenu.Add("yposition", new Slider("Y Position", (int)Math.Round(Screen.PrimaryScreen.Bounds.Height * 0.6953703703703704d), 0, Screen.PrimaryScreen.Bounds.Height));
-            recallTrackerMenu.Add("opacity", new Slider("Opacity", 70));
-            recallTrackerMenu.AddSeparator(1);
-            CheckBox reset = recallTrackerMenu.Add("resetxy", new CheckBox("Reset X/Y to 100", false));
+            _recallTrackerMenu.Add("xposition", new Slider("X Position", (int)Math.Round(Screen.PrimaryScreen.Bounds.Width * 0.4083333333333333d), 0, Screen.PrimaryScreen.Bounds.Width));
+            _recallTrackerMenu.Add("yposition", new Slider("Y Position", (int)Math.Round(Screen.PrimaryScreen.Bounds.Height * 0.6953703703703704d), 0, Screen.PrimaryScreen.Bounds.Height));
+            _recallTrackerMenu.Add("opacity", new Slider("Opacity", 70));
+            _recallTrackerMenu.AddSeparator(1);
+            CheckBox reset = _recallTrackerMenu.Add("resetxy", new CheckBox("Reset X/Y to 100", false));
             reset.OnValueChange += (sender, args) =>
             {
                 if (args.NewValue)
                 {
-                    recallTrackerMenu["xposition"].Cast<Slider>().CurrentValue = 100;
-                    recallTrackerMenu["yposition"].Cast<Slider>().CurrentValue = 100;
+                    _recallTrackerMenu["xposition"].Cast<Slider>().CurrentValue = 100;
+                    _recallTrackerMenu["yposition"].Cast<Slider>().CurrentValue = 100;
                     Core.DelayAction(() => reset.CurrentValue = false, 200);
                 }
             };
 
-            CheckBox reset2 = recallTrackerMenu.Add("resetoriginal", new CheckBox("Reset X/Y to default", false));
+            CheckBox reset2 = _recallTrackerMenu.Add("resetoriginal", new CheckBox("Reset X/Y to default", false));
             reset2.OnValueChange += (sender, args) =>
             {
                 if (args.NewValue)
                 {
-                    recallTrackerMenu["xposition"].Cast<Slider>().CurrentValue = (int)Math.Round(Screen.PrimaryScreen.Bounds.Width * 0.4083333333333333d);
-                    recallTrackerMenu["yposition"].Cast<Slider>().CurrentValue = (int)Math.Round(Screen.PrimaryScreen.Bounds.Height * 0.6953703703703704d);
+                    _recallTrackerMenu["xposition"].Cast<Slider>().CurrentValue = (int)Math.Round(Screen.PrimaryScreen.Bounds.Width * 0.4083333333333333d);
+                    _recallTrackerMenu["yposition"].Cast<Slider>().CurrentValue = (int)Math.Round(Screen.PrimaryScreen.Bounds.Height * 0.6953703703703704d);
                     Core.DelayAction(() => reset2.CurrentValue = false, 200);
                 }
             };
+            #endregion
 
-            Text = new Text("", new Font(FontFamily.GenericSansSerif, 8, FontStyle.Bold))
+            _text = new Text("", new Font(FontFamily.GenericSansSerif, 8, FontStyle.Bold))
             {
                 Color = Color.AntiqueWhite
             };
 
+            foreach (AIHeroClient enemy in EntityManager.Heroes.Enemies)
+            {
+                _recallPredictions.Add(new RecallPrediction(enemy.NetworkId, Game.Time, enemy.RealPath()));
+            }
+
+            Game.OnUpdate += Game_OnUpdate;
             Teleport.OnTeleport += Teleport_OnTeleport;
             Drawing.OnEndScene += Drawing_OnEndScene;
-            AppDomain.CurrentDomain.DomainUnload += OnDomainUnload;
-            AppDomain.CurrentDomain.ProcessExit += OnDomainUnload;
+            Drawing.OnDraw += Drawing_OnDraw;
+        }
+
+        private void Drawing_OnDraw(EventArgs args)
+        {
+            foreach (AIHeroClient enemy in EntityManager.Heroes.Enemies)
+            {
+                if (enemy.IsHPBarRendered)
+                    continue;
+
+                RecallPrediction recallPrediction = _recallPredictions.FirstOrDefault(x => x.NetworkId == enemy.NetworkId);
+                if (recallPrediction == null)
+                    continue;
+
+                Recall recall = _recalls.FirstOrDefault(x => x.NetworkId == enemy.NetworkId);
+                if (recall == null)
+                    continue;
+
+                Vector2 predictedPosition = Vector2.Zero;
+
+                float range = (Math.Abs(recallPrediction.LastSeen - recall.StartTime) - 0.5f) * enemy.MoveSpeed;
+                Vector3[] realPath = recallPrediction.Path;
+                for (int index = 0; index < realPath.Length - 1; ++index)
+                {
+                    Vector2 vector21 = realPath[index].To2D();
+                    Vector2 vector22 = realPath[index + 1].To2D();
+                    float num = vector21.Distance(vector22);
+                    if (num > range)
+                    {
+                        predictedPosition = vector21.Extend(vector22, range);
+                        break;
+                    }
+                    range -= num;
+                }
+
+                if (predictedPosition == Vector2.Zero)
+                    predictedPosition = realPath.Last().To2D();
+
+                if (!predictedPosition.IsValid())
+                    continue;
+
+                Circle.Draw(SharpDX.Color.HotPink, enemy.BoundingRadius, predictedPosition.To3D());
+            }
+        }
+
+        private void Game_OnUpdate(EventArgs args)
+        {
+            foreach (AIHeroClient enemy in EntityManager.Heroes.Enemies)
+            {
+                if (!enemy.IsHPBarRendered)
+                    continue;
+
+                RecallPrediction recallPrediction = _recallPredictions.FirstOrDefault(x => x.NetworkId == enemy.NetworkId);
+                if (recallPrediction == null)
+                    continue;
+
+                recallPrediction.LastSeen = Game.Time;
+
+                recallPrediction.Path = enemy.RealPath();
+
+
+            }
         }
 
         private void Teleport_OnTeleport(Obj_AI_Base sender, Teleport.TeleportEventArgs args)
@@ -83,35 +150,35 @@ namespace wzUtility.RecallTracker
             switch (args.Status)
             {
                 case TeleportStatus.Start:
-                    Recall startedRecall = Recalls.FirstOrDefault(x => x.Name == player.ChampionName);
+                    Recall startedRecall = _recalls.FirstOrDefault(x => x.NetworkId == player.NetworkId);
 
                     if (startedRecall != null)
-                        Recalls.Remove(startedRecall);
+                        _recalls.Remove(startedRecall);
 
-                    Recalls.Add(new Recall(player.ChampionName, player.HealthPercent, Game.Time + (args.Duration / 1000f), args.Duration / 1000f));
+                    _recalls.Add(new Recall(player.NetworkId, player.ChampionName, player.HealthPercent, args.Duration / 1000f));
                     break;
                 case TeleportStatus.Abort:
-                    Recall abortedRecall = Recalls.FirstOrDefault(x => x.Name == player.ChampionName);
+                    Recall abortedRecall = _recalls.FirstOrDefault(x => x.NetworkId == player.NetworkId);
 
                     if (abortedRecall != null)
                     {
-                        abortedRecall.Abort();
-                        Core.DelayAction(() => Recalls.Remove(abortedRecall), 2000);
+                        abortedRecall.IsAborted = true;
+                        Core.DelayAction(() => _recalls.Remove(abortedRecall), 2000);
                     }
                     break;
                 case TeleportStatus.Finish:
                     //BUG: Procs when recall aborts with less than 0.3 second left.
-                    Recall finishedRecall = Recalls.FirstOrDefault(x => x.Name == player.ChampionName);
+                    Recall finishedRecall = _recalls.FirstOrDefault(x => x.NetworkId == player.NetworkId);
 
                     if (finishedRecall != null)
-                        Recalls.Remove(finishedRecall);
+                        _recalls.Remove(finishedRecall);
                     break;
             }
         }
 
         private void Drawing_OnEndScene(EventArgs args)
         {
-            for (int i = 0; i < Recalls.Count; i++)
+            for (int i = 0; i < _recalls.Count; i++)
             {
                 /*
                  * BUG: Procs when recall aborts with less than 0.3 second left.
@@ -126,41 +193,31 @@ namespace wzUtility.RecallTracker
                     }
                 }*/
 
-                DrawSingleRecallBar(recallTrackerMenu["xposition"].Cast<Slider>().CurrentValue, recallTrackerMenu["yposition"].Cast<Slider>().CurrentValue - ((recallbarHeight + 2) * i), Recalls[i]);
+                DrawSingleRecallBar(_recallTrackerMenu["xposition"].Cast<Slider>().CurrentValue, _recallTrackerMenu["yposition"].Cast<Slider>().CurrentValue - ((_recallbarHeight + 2) * i), _recalls[i]);
             }
         }
 
-        private void DrawSingleRecallBar(float X, float Y, Recall recall)
+        private void DrawSingleRecallBar(float x, float y, Recall recall)
         {
-            int opacity = (int)((recallTrackerMenu["opacity"].Cast<Slider>().CurrentValue/100f)*255);
+            int opacity = (int)((_recallTrackerMenu["opacity"].Cast<Slider>().CurrentValue/100f)*255);
 
-            DrawingHelper.DrawRectangle(X, Y, recallbarWidth, recallbarHeight, Color.FromArgb(opacity, Color.Black));
-            DrawingHelper.DrawRectangle(X + 1, Y + 1, recallbarWidth - 2, recallbarHeight - 2, Color.FromArgb(opacity, Color.Black));
-            DrawingHelper.DrawRectangle(X + 2, Y + 2, recallbarWidth - 4, recallbarHeight - 4, Color.FromArgb(opacity, Color.Gray));
+            DrawingHelper.DrawRectangle(x, y, _recallbarWidth, _recallbarHeight, Color.FromArgb(opacity, Color.Black));
+            DrawingHelper.DrawRectangle(x + 1, y + 1, _recallbarWidth - 2, _recallbarHeight - 2, Color.FromArgb(opacity, Color.Black));
+            DrawingHelper.DrawRectangle(x + 2, y + 2, _recallbarWidth - 4, _recallbarHeight - 4, Color.FromArgb(opacity, Color.Gray));
 
-            if (!recall.IsAborted)
-                DrawingHelper.DrawFilledRectangle(X + 2, Y + 2, (recallbarWidth - 4) * recall.Percent(), recallbarHeight - 4, Color.FromArgb(opacity, DrawingHelper.Interpolate(Color.Red, Color.LawnGreen, recall.Percent())));
-            else
-                DrawingHelper.DrawFilledRectangle(X + 2, Y + 2, (recallbarWidth - 4)*recall.Percent(), recallbarHeight - 4, Color.FromArgb(opacity, Color.SlateGray));
+            DrawingHelper.DrawFilledRectangle(x + 2, y + 2, (_recallbarWidth - 4)*recall.Percent(), _recallbarHeight - 4,
+                !recall.IsAborted ? Color.FromArgb(opacity, DrawingHelper.Interpolate(Color.Red, Color.LawnGreen, recall.Percent())) : Color.FromArgb(opacity, Color.SlateGray));
 
-            Text.TextValue = recall.Name;
-            Text.Position = new Vector2(X + recallbarWidth + 3, Y);
-            Text.Draw();
+            _text.TextValue = recall.Name;
+            _text.Position = new Vector2(x + _recallbarWidth + 3, y);
+            _text.Draw();
 
-            Text.Position = new Vector2(X + recallbarWidth + 6 + Text.Bounding.Width, Y);
-            Text.TextValue = "(" + Math.Round(recall.HealthPercent) + "%)";
-            Text.Color = DrawingHelper.Interpolate(Color.Red, Color.LawnGreen, recall.HealthPercent / 100f);
-            Text.Draw();
+            _text.Position = new Vector2(x + _recallbarWidth + 6 + _text.Bounding.Width, y);
+            _text.TextValue = "(" + Math.Round(recall.HealthPercent) + "%)";
+            _text.Color = DrawingHelper.Interpolate(Color.Red, Color.LawnGreen, recall.HealthPercent / 100f);
+            _text.Draw();
 
-            Text.Color = Color.AntiqueWhite;
-        }
-
-        private void OnDomainUnload(object sender, EventArgs e)
-        {
-            if (Text == null) return;
-
-            Text.Dispose();
-            Text = null;
+            _text.Color = Color.AntiqueWhite;
         }
     }
 }

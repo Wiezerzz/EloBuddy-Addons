@@ -12,9 +12,9 @@ using SharpDX;
 
 namespace wzGraves
 {
-    class Program
+    public class Program
     {
-        private static Menu menu, comboMenu, harassMenu, laneclearMenu, jungleclearMenu, drawingsMenu;
+        private static Menu _menu, _comboMenu, _harassMenu, _laneclearMenu, _jungleclearMenu, _drawingsMenu;
 
         private static readonly Dictionary<string, Spell.Skillshot> Spells = new Dictionary<string, Spell.Skillshot>
         {
@@ -24,74 +24,85 @@ namespace wzGraves
             {"r", new Spell.Skillshot(SpellSlot.R, 1500, SkillShotType.Linear, 250, 2100, 100)}
         };
 
-        private static readonly ColorBGRA drawingsColour = new ColorBGRA(210, 100, 0, 255);
+        private static readonly ColorBGRA DrawingsColour = new ColorBGRA(210, 100, 0, 255);
 
         //---------------------------------------------------------------------------------------------------------------//
 
-        private static void Main(string[] args)
+        private static void Main()
         {
             Loading.OnLoadingComplete += Loading_OnLoadingComplete;
         }
 
         #region Events
+
         private static void Loading_OnLoadingComplete(EventArgs args)
         {
-            if(Player.Instance.Hero != Champion.Graves)
+            if (Player.Instance.Hero != Champion.Graves)
                 return;
 
-            Bootstrap.Init(null);
-
             #region Main Menu
-            menu = MainMenu.AddMenu("wzGraves", "gravesmenu", "wzGraves");
-            menu.AddGroupLabel("wzGraves");
-            menu.AddLabel("Nothing to see here....");
+
+            _menu = MainMenu.AddMenu("wzGraves", "gravesmenu", "wzGraves");
+            _menu.AddGroupLabel("wzGraves");
+            _menu.AddLabel("Nothing to see here....");
+
             #endregion
 
             #region Combo Menu
-            comboMenu = menu.AddSubMenu("Combo", "combomenu");
-            comboMenu.AddGroupLabel("Combo");
 
-            comboMenu.Add("comboq", new CheckBox("Use Q"));
-            comboMenu.Add("combowallq", new CheckBox("Use Wall Q"));
-            comboMenu.Add("combowimmobile", new CheckBox("Use W on immobile"));
-            comboMenu.Add("comboe", new CheckBox("Use E after AA"));
-            comboMenu.Add("combor", new CheckBox("Use R to execute"));
+            _comboMenu = _menu.AddSubMenu("Combo", "combomenu");
+            _comboMenu.AddGroupLabel("Combo");
+
+            _comboMenu.Add("comboq", new CheckBox("Use Q"));
+            _comboMenu.Add("combowallq", new CheckBox("Use Wall Q"));
+            _comboMenu.Add("combowimmobile", new CheckBox("Use W on immobile"));
+            _comboMenu.Add("comboe", new CheckBox("Use E after AA"));
+            _comboMenu.Add("combor", new CheckBox("Use R to execute"));
+
             #endregion
 
             #region Harass Menu
-            harassMenu = menu.AddSubMenu("Harass", "harassmenu");
-            harassMenu.AddGroupLabel("Harass");
 
-            harassMenu.Add("harassq", new CheckBox("Use Q"));
-            harassMenu.Add("harasswallq", new CheckBox("Use Wall Q"));
-            harassMenu.Add("harassmana", new Slider("Minimum mana before using Q", 40));
+            _harassMenu = _menu.AddSubMenu("Harass", "harassmenu");
+            _harassMenu.AddGroupLabel("Harass");
+
+            _harassMenu.Add("harassq", new CheckBox("Use Q"));
+            _harassMenu.Add("harasswallq", new CheckBox("Use Wall Q"));
+            _harassMenu.Add("harassmana", new Slider("Minimum mana before using Q", 40));
+
             #endregion
 
             #region Laneclear Menu
-            laneclearMenu = menu.AddSubMenu("Laneclear", "laneclearmenu");
-            laneclearMenu.AddGroupLabel("Laneclear");
 
-            laneclearMenu.Add("laneclearq", new CheckBox("Use Q", false));
+            _laneclearMenu = _menu.AddSubMenu("Laneclear", "laneclearmenu");
+            _laneclearMenu.AddGroupLabel("Laneclear");
+
+            _laneclearMenu.Add("laneclearq", new CheckBox("Use Q", false));
+
             #endregion
 
             #region Jungleclear Menu
-            jungleclearMenu = menu.AddSubMenu("Jungleclear", "jungleclearmenu");
-            jungleclearMenu.AddGroupLabel("Jungleclear");
 
-            jungleclearMenu.Add("jungleclearq", new CheckBox("Use Q"));
-            jungleclearMenu.Add("junglecleare", new CheckBox("Use E", false));
+            _jungleclearMenu = _menu.AddSubMenu("Jungleclear", "jungleclearmenu");
+            _jungleclearMenu.AddGroupLabel("Jungleclear");
+
+            _jungleclearMenu.Add("jungleclearq", new CheckBox("Use Q"));
+            _jungleclearMenu.Add("junglecleare", new CheckBox("Use E", false));
+
             #endregion
 
             #region Drawings Menu
-            drawingsMenu = menu.AddSubMenu("Drawings", "drawingsmenu");
-            drawingsMenu.AddGroupLabel("Drawings");
 
-            drawingsMenu.Add("drawq", new CheckBox("Draw Q"));
-            drawingsMenu.Add("draww", new CheckBox("Draw W", false));
-            drawingsMenu.Add("drawe", new CheckBox("Draw E", false));
-            drawingsMenu.Add("drawr", new CheckBox("Draw R"));
-            drawingsMenu.AddSeparator();
-            drawingsMenu.Add("drawready", new CheckBox("Only draw when ready"));
+            _drawingsMenu = _menu.AddSubMenu("Drawings", "drawingsmenu");
+            _drawingsMenu.AddGroupLabel("Drawings");
+
+            _drawingsMenu.Add("drawq", new CheckBox("Draw Q"));
+            _drawingsMenu.Add("draww", new CheckBox("Draw W", false));
+            _drawingsMenu.Add("drawe", new CheckBox("Draw E", false));
+            _drawingsMenu.Add("drawr", new CheckBox("Draw R"));
+            _drawingsMenu.AddSeparator();
+            _drawingsMenu.Add("drawready", new CheckBox("Only draw when ready"));
+
             #endregion
 
             Game.OnTick += Game_OnTick;
@@ -121,11 +132,11 @@ namespace wzGraves
         {
             foreach (KeyValuePair<string, Spell.Skillshot> spell in Spells)
             {
-                if (drawingsMenu["draw" + spell.Key].Cast<CheckBox>().CurrentValue)
+                if (_drawingsMenu["draw" + spell.Key].Cast<CheckBox>().CurrentValue)
                 {
-                    if (drawingsMenu["drawready"].Cast<CheckBox>().CurrentValue && spell.Value.IsReady() || !drawingsMenu["drawready"].Cast<CheckBox>().CurrentValue)
+                    if (_drawingsMenu["drawready"].Cast<CheckBox>().CurrentValue && spell.Value.IsReady() || !_drawingsMenu["drawready"].Cast<CheckBox>().CurrentValue)
                     {
-                        Circle.Draw(drawingsColour, spell.Value.Range, Player.Instance.Position);
+                        Circle.Draw(DrawingsColour, spell.Value.Range, Player.Instance.Position);
                     }
                 }
             }
@@ -133,10 +144,10 @@ namespace wzGraves
 
         private static void Orbwalker_OnPostAttack(AttackableUnit target, EventArgs args)
         {
-            if(Player.HasBuff("GravesBasicAttackAmmo2") || !Spells["e"].IsReady())
+            if (Player.HasBuff("GravesBasicAttackAmmo2") || !Spells["e"].IsReady())
                 return;
 
-            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) && comboMenu["comboe"].Cast<CheckBox>().CurrentValue)
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) && _comboMenu["comboe"].Cast<CheckBox>().CurrentValue)
             {
                 if (target.Type == GameObjectType.AIHeroClient)
                 {
@@ -146,9 +157,9 @@ namespace wzGraves
                 }
             }
 
-            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear) && jungleclearMenu["junglecleare"].Cast<CheckBox>().CurrentValue)
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear) && _jungleclearMenu["junglecleare"].Cast<CheckBox>().CurrentValue)
             {
-                Obj_AI_Minion jungleMob = (Obj_AI_Minion)target;
+                Obj_AI_Minion jungleMob = (Obj_AI_Minion) target;
 
                 if (jungleMob != null && jungleMob.IsMatureMonster())
                 {
@@ -159,48 +170,52 @@ namespace wzGraves
             }
 
         }
+
         #endregion
 
         #region Modes
+
         private static void Combo()
         {
             HandleQ();
 
-            if (comboMenu["combowimmobile"].Cast<CheckBox>().CurrentValue)
+            if (_comboMenu["combowimmobile"].Cast<CheckBox>().CurrentValue)
                 AutoWImmobile();
 
-            if (comboMenu["combor"].Cast<CheckBox>().CurrentValue)
+            if (_comboMenu["combor"].Cast<CheckBox>().CurrentValue)
                 HandleUlt();
         }
 
         private static void Harass()
         {
-            if (!Spells["q"].IsReady() || Player.Instance.ManaPercent < harassMenu["harassmana"].Cast<Slider>().CurrentValue || !harassMenu["harassq"].Cast<CheckBox>().CurrentValue && !harassMenu["harasswallq"].Cast<CheckBox>().CurrentValue)
+            if (!Spells["q"].IsReady() || Player.Instance.ManaPercent < _harassMenu["harassmana"].Cast<Slider>().CurrentValue ||
+                !_harassMenu["harassq"].Cast<CheckBox>().CurrentValue && !_harassMenu["harasswallq"].Cast<CheckBox>().CurrentValue)
                 return;
 
             AIHeroClient target = TargetSelector.GetTarget(Spells["q"].Range, DamageType.Physical);
 
             if (target != null)
             {
-                if (harassMenu["harasswallq"].Cast<CheckBox>().CurrentValue)
+                if (_harassMenu["harasswallq"].Cast<CheckBox>().CurrentValue)
                 {
                     if (CastWallQ(target))
                         return;
                 }
 
-                if (harassMenu["harassq"].Cast<CheckBox>().CurrentValue)
+                if (_harassMenu["harassq"].Cast<CheckBox>().CurrentValue)
                     CastBombQ(target);
             }
         }
 
         private static void LaneClear()
         {
-            if (!laneclearMenu["laneclearq"].Cast<CheckBox>().CurrentValue || !Spells["q"].IsReady())
+            if (!_laneclearMenu["laneclearq"].Cast<CheckBox>().CurrentValue || !Spells["q"].IsReady())
                 return;
 
             foreach (Obj_AI_Minion minion in EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Instance.Position, Spells["q"].Range))
             {
-                if (minion.IsValidTarget(Spells["q"].Range) && Spells["q"].GetPrediction(minion).CollisionObjects.Count() >= 3 && !Player.Instance.CheckWallCollison(minion.Position))
+                if (minion.IsValidTarget(Spells["q"].Range) && Spells["q"].GetPrediction(minion).CollisionObjects.Count() >= 3 &&
+                    !Player.Instance.CheckWallCollison(minion.Position))
                 {
                     if (Spells["q"].Cast(minion.Position))
                         return;
@@ -210,17 +225,20 @@ namespace wzGraves
 
         private static void JungleClear()
         {
-            if(!jungleclearMenu["jungleclearq"].Cast<CheckBox>().CurrentValue || !Spells["q"].IsReady())
+            if (!_jungleclearMenu["jungleclearq"].Cast<CheckBox>().CurrentValue || !Spells["q"].IsReady())
                 return;
 
-            Obj_AI_Minion jungleMob = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.Position, Spells["q"].Range).OrderByDescending(x => x.MaxHealth).FirstOrDefault();
+            Obj_AI_Minion jungleMob =
+                EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Instance.Position, Spells["q"].Range).OrderByDescending(x => x.MaxHealth).FirstOrDefault();
 
             if (jungleMob != null && jungleMob.IsMatureMonster() && jungleMob.IsValidTarget(Spells["q"].Range) && !Player.Instance.CheckWallCollison(jungleMob.Position))
                 CastWallQ(jungleMob);
         }
+
         #endregion
 
         #region Spell Methods
+
         private static void HandleQ()
         {
             if (!Spells["q"].IsReady())
@@ -236,13 +254,13 @@ namespace wzGraves
                         return;
                 }
 
-                if (comboMenu["combowallq"].Cast<CheckBox>().CurrentValue)
+                if (_comboMenu["combowallq"].Cast<CheckBox>().CurrentValue)
                 {
                     if (CastWallQ(target))
                         return;
                 }
 
-                if (comboMenu["comboq"].Cast<CheckBox>().CurrentValue)
+                if (_comboMenu["comboq"].Cast<CheckBox>().CurrentValue)
                     CastBombQ(target);
             }
         }
@@ -255,11 +273,11 @@ namespace wzGraves
             if (Player.Instance.CheckWallCollison(pred.CastPosition))
                 return false;
 
-            Vector3 QEndPosition = pred.CastPosition.ExtendVector3(Player.Instance.Position, -(Spells["q"].Range - Player.Instance.Distance(pred.CastPosition)));
+            Vector3 qEndPosition = pred.CastPosition.ExtendVector3(Player.Instance.Position, -(Spells["q"].Range - Player.Instance.Distance(pred.CastPosition)));
 
-            for (int i = 0; i < pred.CastPosition.Distance(QEndPosition); i += 30)
+            for (int i = 0; i < pred.CastPosition.Distance(qEndPosition); i += 30)
             {
-                Vector3 wallPosition = pred.CastPosition.ExtendVector3(QEndPosition, pred.CastPosition.Distance(QEndPosition) - i);
+                Vector3 wallPosition = pred.CastPosition.ExtendVector3(qEndPosition, pred.CastPosition.Distance(qEndPosition) - i);
                 CollisionFlags collisionFlags = NavMesh.GetCollisionFlags(wallPosition);
 
                 if (collisionFlags.HasFlag(CollisionFlags.Wall) || collisionFlags.HasFlag(CollisionFlags.Building))
@@ -308,7 +326,9 @@ namespace wzGraves
             if (!Spells["r"].IsReady())
                 return;
 
-            foreach (AIHeroClient enemy in EntityManager.Heroes.Enemies.Where(x => Player.Instance.Distance(x) > 600 && x.IsValidTarget(Spells["r"].Range) && x.Health < Spells["r"].CalculateRDamage(x)))
+            foreach (
+                AIHeroClient enemy in
+                    EntityManager.Heroes.Enemies.Where(x => Player.Instance.Distance(x) > 600 && x.IsValidTarget(Spells["r"].Range) && x.Health < Spells["r"].CalculateRDamage(x)))
             {
                 PredictionResult pred = Spells["r"].GetPrediction(enemy);
 
@@ -317,11 +337,12 @@ namespace wzGraves
 
                 if (pred.HitChance >= HitChance.Medium)
                 {
-                    if(Spells["r"].Cast(pred.CastPosition))
+                    if (Spells["r"].Cast(pred.CastPosition))
                         return;
                 }
             }
         }
+
         #endregion
 
     }

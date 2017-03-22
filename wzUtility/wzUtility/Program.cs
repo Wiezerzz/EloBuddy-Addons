@@ -13,6 +13,7 @@ namespace wzUtility
         private static TowerRange.TowerRange towerRange;
         private static WardTracker.Tracker wardTracker;
         private static RecallTracker.Tracker recallTracker;
+        private static GankAlerter.Alerter gankAlerter;
 
         private static void Main(string[] args)
         {
@@ -31,6 +32,7 @@ namespace wzUtility
             menu.Add("loadtowerrangeindicator", new CheckBox("Load Tower Range Indicator plugin"));
             menu.Add("loadwardtracker", new CheckBox("Load Ward Tracker plugin"));
             menu.Add("loadrecalltracker", new CheckBox("Load Recall Tracker plugin"));
+            menu.Add("loadgankalerter", new CheckBox("Load Gank Alerter plugin"));
 
 
             if (menu["loadcooldowntracker"].Cast<CheckBox>().CurrentValue)
@@ -44,6 +46,9 @@ namespace wzUtility
 
             if (menu["loadrecalltracker"].Cast<CheckBox>().CurrentValue)
                 recallTracker = new RecallTracker.Tracker(menu);
+
+            if (menu["loadgankalerter"].Cast<CheckBox>().CurrentValue)
+                gankAlerter = new GankAlerter.Alerter(menu);
         }
     }
 }

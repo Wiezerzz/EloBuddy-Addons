@@ -4,17 +4,24 @@ namespace wzUtility.WardTracker
 {
     internal class WardObject
     {
-        public bool IsPink { get; set; }
-        public string Caster { get; set; }
-        public float Expires { get; set; }
-        public Vector3 Position { get; set; }
+        public WardEnum WardType;
+        public string Caster;
+        public float Expires;
+        public Vector3 Position;
 
-        public WardObject(bool isPink, string caster, float expiresAt, Vector3 position)
+        public WardObject(WardEnum wardType, string caster, float expiresAt, Vector3 position)
         {
-            IsPink = isPink;
+            WardType = wardType;
             Caster = caster;
             Expires = expiresAt;
             Position = position;
+        }
+
+        public enum WardEnum
+        {
+            SightWard,
+            VisionWard,
+            BlueTrinket
         }
     }
 }

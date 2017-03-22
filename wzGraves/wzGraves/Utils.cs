@@ -10,7 +10,6 @@ namespace wzGraves
         private static readonly float[] QDamageModifier = {55f, 70f, 85f, 100f, 115f};
         private static readonly float[] RDamageModifier = {250f, 400f, 550f};
 
-        //Copied from Fluxy's YasouBuddy - He is a god and so is his yasou addon.
         public static Vector3 ExtendVector3(this Vector3 vector, Vector3 direction, float distance)
         {
             if (vector.To2D().Distance(direction.To2D()) == 0)

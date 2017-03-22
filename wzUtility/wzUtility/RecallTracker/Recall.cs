@@ -4,27 +4,25 @@ namespace wzUtility.RecallTracker
 {
     internal class Recall
     {
-        public Recall(string name, float healthPercent, float endTime, float duration)
-        {
-            Name = name;
-            HealthPercent = healthPercent;
-            EndTime = endTime;
-            Duration = duration;
-        }
+        private float _lastPercent;
 
+        public int NetworkId;
         public string Name;
         public float HealthPercent;
+        public float StartTime { get { return EndTime - Duration; } }
         public float EndTime;
         public float Duration;
+        public bool IsAborted;
         public float Elapsed { get { return EndTime - Game.Time; } }
 
-        public bool IsAborted;
-        public void Abort()
+        internal Recall(int networkid, string name, float healthPercent, float duration)
         {
-            IsAborted = true;
+            NetworkId = networkid;
+            Name = name;
+            HealthPercent = healthPercent;
+            EndTime = Game.Time + duration;
+            Duration = duration;
         }
-
-        private float _lastPercent;
 
         public float Percent()
         {

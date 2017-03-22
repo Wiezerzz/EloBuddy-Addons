@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
@@ -12,7 +11,7 @@ using Color = System.Drawing.Color;
 
 namespace wzUtility.WardTracker
 {
-    class Tracker
+    public class Tracker
     {
         private Menu menu, wardTrackerMenu;
         private Text Text;
@@ -47,7 +46,7 @@ namespace wzUtility.WardTracker
 
             foreach (KeyValuePair<int, WardObject> ward in wards)
             {
-                if (!ward.Value.IsPink && ward.Value.Expires < Game.Time)
+                if (ward.Value.WardType == WardObject.WardEnum.SightWard && ward.Value.Expires < Game.Time)
                 {
                     if (wards.ContainsKey(ward.Key))
                         Core.DelayAction(() => wards.Remove(ward.Key), 0);
@@ -58,15 +57,29 @@ namespace wzUtility.WardTracker
 
                 string time = "0";
 
-                if (!ward.Value.IsPink)
+                if (ward.Value.WardType == WardObject.WardEnum.SightWard)
                     time = string.Format("{0:mm\\:ss}", TimeSpan.FromSeconds(ward.Value.Expires - Game.Time));
 
-                Circle.Draw(ward.Value.IsPink ? new ColorBGRA(240, 12, 147, 200) : new ColorBGRA(0, 180, 0, 200), wardTrackerMenu["wardrange"].Cast<Slider>().CurrentValue, ward.Value.Position);
+                SharpDX.Color color = SharpDX.Color.White;
+                switch (ward.Value.WardType)
+                {
+                    case WardObject.WardEnum.SightWard:
+                        color = new ColorBGRA(0, 180, 0, 200);
+                        break;
+                    case WardObject.WardEnum.VisionWard:
+                        color = new ColorBGRA(240, 12, 147, 200);
+                        break;
+                    case WardObject.WardEnum.BlueTrinket:
+                        color = SharpDX.Color.DeepSkyBlue;
+                        break;
+                }
 
-                if (wardTrackerMenu["showtime"].Cast<CheckBox>().CurrentValue && !ward.Value.IsPink)
+                Circle.Draw(color, wardTrackerMenu["wardrange"].Cast<Slider>().CurrentValue, ward.Value.Position);
+
+                if (wardTrackerMenu["showtime"].Cast<CheckBox>().CurrentValue && ward.Value.WardType == WardObject.WardEnum.SightWard)
                 {
                     Text.TextValue = time;
-                    Text.Position = ward.Value.Position.WorldToScreen() - new Vector2(Text.Bounding.Width / 2, -16);
+                    Text.Position = ward.Value.Position.WorldToScreen() - new Vector2(Text.Bounding.Width/2f, -16);
                     Text.Draw();
                 }
             }
@@ -84,12 +97,12 @@ namespace wzUtility.WardTracker
 
                 if (ward == null || !ward.IsEnemy)
                     return;
-                
+
                 if (wards.ContainsKey(ward.NetworkId))
                 {
                     Core.DelayAction(() =>
                     {
-                        Obj_AI_Minion tempWard = ObjectManager.GetUnitByNetworkId((uint)ward.NetworkId) as Obj_AI_Minion;
+                        Obj_AI_Minion tempWard = ObjectManager.GetUnitByNetworkId((uint) ward.NetworkId) as Obj_AI_Minion;
 
                         wards[ward.NetworkId].Expires = Game.Time + (tempWard.GetBuff("sharedwardbuff").EndTime - Game.Time);
                         wards[ward.NetworkId].Position = tempWard.ServerPosition;
@@ -97,8 +110,9 @@ namespace wzUtility.WardTracker
                     return;
                 }
 
-                switch (ward.Name)
+                switch (ward.BaseSkinName)
                 {
+                    case "YellowTrinket":
                     case "SightWard":
                         Core.DelayAction(() =>
                         {
@@ -106,7 +120,7 @@ namespace wzUtility.WardTracker
                             BuffInstance buff = tempWard.GetBuff("sharedwardbuff");
 
                             if (buff != null)
-                                wards.Add(ward.NetworkId, new WardObject(false, ((AIHeroClient)buff.Caster).ChampionName, Game.Time + (buff.EndTime - Game.Time), ward.Position));
+                                wards.Add(ward.NetworkId, new WardObject(WardObject.WardEnum.SightWard, ((AIHeroClient) buff.Caster).ChampionName, Game.Time + (buff.EndTime - Game.Time), ward.Position));
                         }, 1);
 
                         break;
@@ -114,20 +128,20 @@ namespace wzUtility.WardTracker
                         Core.DelayAction(() =>
                         {
                             Obj_AI_Minion tempWard = ObjectManager.GetUnitByNetworkId((uint) ward.NetworkId) as Obj_AI_Minion;
-                            BuffInstance buff = tempWard.GetBuff("sharedwardbuff");
+                            BuffInstance buff = tempWard.GetBuff("sharedvisionwardbuff");
 
                             if (buff != null)
-                            {
-                                wards.Add(ward.NetworkId, new WardObject(false, ((AIHeroClient)buff.Caster).ChampionName, Game.Time + (buff.EndTime - Game.Time), ward.Position));
-                            }
-                            else
-                            {
-                                buff = tempWard.GetBuff("sharedvisionwardbuff");
-                                if (buff == null)
-                                    return;
+                                wards.Add(ward.NetworkId, new WardObject(WardObject.WardEnum.VisionWard, ((AIHeroClient) buff.Caster).ChampionName, float.MaxValue, ward.Position));
+                        }, 1);
+                        break;
+                    case "BlueTrinket":
+                        Core.DelayAction(() =>
+                        {
+                            Obj_AI_Minion tempWard = ObjectManager.GetUnitByNetworkId((uint) ward.NetworkId) as Obj_AI_Minion;
+                            BuffInstance buff = tempWard.GetBuff("relicblueward");
 
-                                wards.Add(ward.NetworkId, new WardObject(true, ((AIHeroClient)buff.Caster).ChampionName, float.MaxValue, ward.Position));
-                            }
+                            if (buff != null)
+                                wards.Add(ward.NetworkId, new WardObject(WardObject.WardEnum.BlueTrinket, ((AIHeroClient) buff.Caster).ChampionName, float.MaxValue, ward.Position));
                         }, 1);
                         break;
                 }
@@ -149,7 +163,8 @@ namespace wzUtility.WardTracker
 
         private void OnDomainUnload(object sender, EventArgs e)
         {
-            if (Text == null) return;
+            if (Text == null)
+                return;
 
             Text.Dispose();
             Text = null;

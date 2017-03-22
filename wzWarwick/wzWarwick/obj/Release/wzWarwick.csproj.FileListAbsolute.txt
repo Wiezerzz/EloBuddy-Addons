@@ -1,0 +1,12 @@
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzWarwick\wzWarwick\bin\Release\wzWarwick.exe.config
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzWarwick\wzWarwick\bin\Release\wzWarwick.exe
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzWarwick\wzWarwick\bin\Release\wzWarwick.pdb
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzWarwick\wzWarwick\bin\Release\EloBuddy.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzWarwick\wzWarwick\bin\Release\EloBuddy.SDK.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzWarwick\wzWarwick\bin\Release\SharpDX.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzWarwick\wzWarwick\bin\Release\SharpDX.Direct3D9.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzWarwick\wzWarwick\bin\Release\Newtonsoft.Json.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzWarwick\wzWarwick\bin\Release\EloBuddy.Sandbox.dll
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzWarwick\wzWarwick\obj\Release\wzWarwick.csprojResolveAssemblyReference.cache
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzWarwick\wzWarwick\obj\Release\wzWarwick.exe
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzWarwick\wzWarwick\obj\Release\wzWarwick.pdb

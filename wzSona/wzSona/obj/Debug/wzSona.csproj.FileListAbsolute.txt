@@ -9,3 +9,4 @@ C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\bin\Debug\Sharp
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\bin\Debug\Newtonsoft.Json.dll
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\obj\Debug\wzSona.exe
 C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\obj\Debug\wzSona.pdb
+C:\Users\Wiezerzz\Documents\GitHub\EloBuddy-Addons\wzSona\wzSona\bin\Release\wzSona.exe.config
